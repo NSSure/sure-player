@@ -1,0 +1,82 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.ComboBox?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<?import javafx.scene.control.Label?>
+<BorderPane fx:controller="Default.DefaultController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <HBox spacing="10">
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+
+            <Button>PLAY</Button>
+            <TextField promptText="Search..." />
+
+            <Label fx:id="lblCurrentTrackDescription" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <ComboBox promptText="Options" style="-fx-background-color: transparent;">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Settings"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </HBox>
+    </top>
+    <left>
+        <VBox style="-fx-background-color: #c7c7c7;" minWidth="200">
+            <Button fx:id="browse" maxWidth="${browse.parent.width}" styleClass="btn-transparent">Browse</Button>
+            <Button fx:id="recent" maxWidth="${recent.parent.width}" styleClass="btn-transparent">Recently Played</Button>
+        </VBox>
+    </left>
+    <center>
+        <TableView fx:id="trackTable">
+            <columns>
+                <TableColumn text="Song">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="Name" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Artist">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="Name" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Album">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="Name" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="5" bottom="10" left="5" />
+            </padding>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button onMouseClicked="#onPreviousClicked">PREV</Button>
+                <Button onMouseClicked="#onStartClicked">START</Button>
+                <Button onMouseClicked="#onNextClicked">NEXT</Button>
+            </HBox>
+
+            <Slider fx:id="playbackProgress"></Slider>
+        </VBox>
+    </bottom>
+</BorderPane>
