@@ -14,6 +14,8 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ToolBar?>
 <BorderPane fx:controller="Default.DefaultController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
         <HBox spacing="10">
@@ -21,30 +23,19 @@
                 <Insets top="5" right="5" bottom="5" left="5"/>
             </padding>
 
-            <Button>PLAY</Button>
-            <TextField promptText="Search..." />
-
-            <Label fx:id="lblCurrentTrackDescription" />
-
-            <Region HBox.hgrow="ALWAYS" />
-
-            <ComboBox promptText="Options" style="-fx-background-color: transparent;">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Settings"/>
-                    </FXCollections>
-                </items>
-            </ComboBox>
+            <Label text="Track Player" />
         </HBox>
     </top>
     <left>
-        <VBox style="-fx-background-color: #c7c7c7;" minWidth="200">
-            <Button fx:id="browse" maxWidth="${browse.parent.width}" styleClass="btn-transparent">Browse</Button>
-            <Button fx:id="recent" maxWidth="${recent.parent.width}" styleClass="btn-transparent">Recently Played</Button>
+        <VBox styleClass="side-bar" minWidth="200">
+
         </VBox>
     </left>
     <center>
         <TableView fx:id="trackTable">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
             <columns>
                 <TableColumn text="Song">
                     <cellValueFactory>
@@ -66,17 +57,39 @@
     </center>
     <bottom>
         <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="5" bottom="10" left="5" />
-            </padding>
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="5" bottom="5" left="5"/>
+                </padding>
 
-            <HBox spacing="10" alignment="CENTER">
-                <Button onMouseClicked="#onPreviousClicked">PREV</Button>
-                <Button onMouseClicked="#onStartClicked">START</Button>
-                <Button onMouseClicked="#onNextClicked">NEXT</Button>
-            </HBox>
+                <HBox spacing="10" alignment="CENTER">
+                    <Region HBox.hgrow="ALWAYS" />
 
-            <Slider fx:id="playbackProgress"></Slider>
+                    <Button styleClass="btn-transparent" onMouseClicked="#onPreviousClicked">PREV</Button>
+                    <Button styleClass="btn-transparent" onMouseClicked="#onStartClicked">START</Button>
+                    <Button styleClass="btn-transparent" onMouseClicked="#onNextClicked">NEXT</Button>
+
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <Slider fx:id="playbackProgress" />
+            </VBox>
+
+            <ToolBar styleClass="footer">
+                <items>
+                    <CheckBox text="Shuffle"/>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <ComboBox promptText="Options" style="-fx-background-color: transparent;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Settings"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </items>
+            </ToolBar>
         </VBox>
     </bottom>
 </BorderPane>

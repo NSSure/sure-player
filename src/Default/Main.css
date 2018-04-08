@@ -1,18 +1,52 @@
+.root {
+    -fx-background-color: #1E1E1E;
+}
+
+.footer {
+    -fx-background-color: #282828;
+}
+
+.label {
+    -fx-text-fill: #ADADAD;
+}
+
+.slider .track {
+    -fx-background-color: #000000;
+}
+
 .btn-transparent {
-        -fx-border-color: transparent;
-        -fx-border-width: 0;
-        -fx-background-radius: 0;
-        -fx-background-color: transparent;
-    }
+    -fx-background-color: transparent;
+    -fx-border-color: #ADADAD;
+    -fx-text-fill: #ADADAD;
+}
 
-    .button:hover {
-        -fx-background-color: #999999;
-    }
+.side-bar {
+    -fx-background-color: #333333;
+}
 
-    .button:focused {
-        -fx-background-color: #c0d5f7;
-    }
+.table-view {
+    -fx-base: transparent;
+    -fx-focus-color: transparent;
+    -fx-background-color: transparent;
+    -fx-control-inner-background-alt: -fx-control-inner-background;
+}
 
-    .button:pressed {
-        -fx-background-color: #c0d5f7;
-    }
+.table-view .table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #181818;
+    -fx-table-cell-border-color: transparent;
+    -fx-cell-size: 40px;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #333333; 
+    -fx-faint-focus-color: transparent;
+ }
+
+.table-view .table-row-cell .text {
+    -fx-fill: #ADADAD;
+    -fx-font-size: 14px;
+}
