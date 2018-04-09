@@ -10,7 +10,7 @@
     </padding>
 
     <HBox>
-        <Button fx:id="btnLocalDirectory" text="Setup Default Directory" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="btnLocalDirectory" text="Set Local Music Folder" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
     </HBox>
 
     <Separator>

@@ -1,5 +1,6 @@
 package Models;
 
+import com.mpatric.mp3agic.ID3v2;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,6 +10,12 @@ import javafx.beans.property.StringProperty;
 public class Track
 {
     private String path;
+    private String artist;
+    private String album;
+    private String year;
+    private ID3v2 tags;
+
+    private StringProperty name = new SimpleStringProperty();
 
     public Track(String name, String path)
     {
@@ -16,7 +23,40 @@ public class Track
         this.path = path;
     }
 
-    private StringProperty name = new SimpleStringProperty();
+    public String getArtist() {
+        if(tags != null){
+            return tags.getArtist();
+        }
+
+        return "";
+    }
+
+    public String getAlbum() {
+        if(tags != null){
+            return tags.getArtist();
+        }
+
+        return "";
+    }
+
+    public String getYear() {
+        if(tags != null){
+            return tags.getYear();
+        }
+
+        return "";
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setTags(ID3v2 tags) {
+        this.tags = tags;
+    }
+
+    // Bindable properties.
 
     public StringProperty nameProperty()
     {
@@ -31,15 +71,5 @@ public class Track
     public final void setName(String value)
     {
         this.name.set(value);
-    }
-
-    public String getPath()
-    {
-        return path;
-    }
-
-    public void setPath(String path)
-    {
-        this.path = path;
     }
 }

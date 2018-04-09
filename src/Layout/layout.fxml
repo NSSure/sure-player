@@ -1,0 +1,78 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.ComboBox?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ToolBar?>
+
+<?import javafx.scene.control.Label?>
+<BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <HBox styleClass="header" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="Tracks" onMouseClicked="#toTrackList" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button text="New Playlist" onMouseClicked="#toPlaylist" />
+        </HBox>
+    </top>
+    <left>
+        <VBox styleClass="side-bar" minWidth="200">
+
+        </VBox>
+    </left>
+    <center>
+
+    </center>
+    <bottom>
+        <VBox>
+            <VBox spacing="20" styleClass="playbackControls">
+                <padding>
+                    <Insets top="20" right="10" bottom="20" left="10"/>
+                </padding>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onPreviousClicked">PREV</Button>
+                    <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onStartClicked">START</Button>
+                    <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onNextClicked">NEXT</Button>
+
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <HBox spacing="15">
+                    <Label fx:id="lblCurrentTimeElapsed" />
+                    <Slider fx:id="playbackProgress" HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblTrackDuration" />
+                </HBox>
+            </VBox>
+
+            <ToolBar styleClass="footer">
+                <items>
+                    <CheckBox text="Shuffle"/>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <ComboBox promptText="Options" style="-fx-background-color: transparent;">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Settings"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </items>
+            </ToolBar>
+        </VBox>
+    </bottom>
+</BorderPane>

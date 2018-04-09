@@ -58,7 +58,8 @@ public class SetupController
         {
             for(File track : localTracks)
             {
-                String path = track.toURI().toString();
+                String path = track.toPath().toString();
+                path = path.replace('\\', '/');
                 tracks.add(new Track(track.getName(), path));
             }
 

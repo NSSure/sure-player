@@ -3,7 +3,7 @@
 }
 
 .footer {
-    -fx-background-color: #282828;
+    -fx-background-color: #1E1E1E;
 }
 
 .label {
@@ -11,13 +11,23 @@
 }
 
 .slider .track {
-    -fx-background-color: #000000;
+    -fx-background-color: #1E1E1E;
 }
 
-.btn-transparent {
-    -fx-background-color: transparent;
-    -fx-border-color: #ADADAD;
-    -fx-text-fill: #ADADAD;
+.button {
+    -fx-background-color: #333333;
+    -fx-text-fill: #A7A7A7;
+    -fx-border-radius: 15;
+    -fx-font-size: 14px;
+}
+
+.btn-danger {
+    -fx-background-color: #C94046;
+    -fx-text-fill: white;
+}
+
+.btn-rounded {
+    -fx-background-radius: 30;
 }
 
 .side-bar {
@@ -36,7 +46,7 @@
 }
 
 .table-view .table-row-cell {
-    -fx-background-color: #181818;
+    -fx-background-color: #1E1E1E;
     -fx-table-cell-border-color: transparent;
     -fx-cell-size: 40px;
 }
@@ -49,4 +59,18 @@
 .table-view .table-row-cell .text {
     -fx-fill: #ADADAD;
     -fx-font-size: 14px;
+}
+
+.playbackControls {
+    -fx-background-color: #282828;
+}
+
+.text-field {
+    -fx-background-color: #333333;
+    -fx-text-fill: #A7A7A7;
+    -fx-font-size: 16px;
+}
+
+.lbl-large {
+    -fx-font-size: 16px;
 }
