@@ -1,5 +1,6 @@
 package Layout;
 
+import EventSystem.EventHandler;
 import javafx.fxml.FXML;
 
 import Models.Track;
@@ -32,6 +33,12 @@ public class LayoutController
     @FXML
     private Label lblTotalDuration;
 
+    public LayoutController()
+    {
+        TrackManager.onTrackStarted = new EventHandler(this::onTrackStarted);
+        TrackManager.onElapsedTimeChanged = new EventHandler(this::onElapseTimeChanged);
+    }
+
     public void initialize()
     {
         try
@@ -45,13 +52,18 @@ public class LayoutController
         {
             System.out.println(ex.getMessage());
         }
-
-        configure();
     }
 
-    public void configure()
+    // Events
+
+    public void onTrackStarted()
     {
 
+    }
+
+    public void onElapseTimeChanged()
+    {
+        playbackProgress.setValue(TrackManager.getCurrentTime());
     }
 
     // FXML Functions

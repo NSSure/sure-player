@@ -6,7 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 
-<GridPane fx:controller="Playlist.PlaylistController" xmlns:fx="http://javafx.com/fxml" vgap="10" alignment="CENTER">
+<GridPane fx:controller="Playlist.PlaylistController" xmlns:fx="http://javafx.com/fxml" vgap="10" alignment="TOP_LEFT">
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>

@@ -11,6 +11,7 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -24,6 +25,9 @@ import java.util.Arrays;
 
 public class TrackManager
 {
+    public static EventSystem.EventHandler onTrackStarted;
+    public static EventSystem.EventHandler onElapsedTimeChanged;
+
     private static MediaPlayer mediaPlayer;
     private static Track currentTrack;
     private static ArrayList<Track> tracks;
@@ -115,6 +119,11 @@ public class TrackManager
                 case STOPPED:
                 case UNKNOWN:
                     mediaPlayer.play();
+
+                    if(onTrackStarted.canExecute())
+                    {
+                        onTrackStarted.execute();
+                    }
                     break;
                 default:
                     break;
@@ -153,6 +162,11 @@ public class TrackManager
     private static void incrementCurrentTime(Observable observable)
     {
         currentTime.set(mediaPlayer.getCurrentTime().toSeconds());
+
+        if(onElapsedTimeChanged.canExecute())
+        {
+            onElapsedTimeChanged.execute();
+        }
     }
 
     public static MediaPlayer getMediaPlayer() {
