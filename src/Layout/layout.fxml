@@ -10,9 +10,11 @@
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ToolBar?>
-
 <?import javafx.scene.control.Label?>
+
 <BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
+
+
     <top>
         <HBox styleClass="header" spacing="10">
             <padding>
@@ -45,7 +47,7 @@
                     <Region HBox.hgrow="ALWAYS" />
 
                     <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onPreviousClicked">PREV</Button>
-                    <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onStartClicked">START</Button>
+                    <Button fx:id="btnTogglePlayback" styleClass="btn-rounded" minWidth="100" onMouseClicked="#onStartClicked">START</Button>
                     <Button styleClass="btn-rounded" minWidth="100" onMouseClicked="#onNextClicked">NEXT</Button>
 
                     <Region HBox.hgrow="ALWAYS" />
@@ -75,4 +77,6 @@
             </ToolBar>
         </VBox>
     </bottom>
+
+    <!--<fx:include source="../Tracks/Tracks.fxml" fx:id="tracksController" />-->
 </BorderPane>

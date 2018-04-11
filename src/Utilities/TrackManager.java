@@ -11,7 +11,6 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -25,17 +24,13 @@ import java.util.Arrays;
 
 public class TrackManager
 {
-    public static EventSystem.EventHandler onTrackStarted;
-    public static EventSystem.EventHandler onElapsedTimeChanged;
+    private MediaPlayer mediaPlayer;
+    private Track currentTrack;
+    private ArrayList<Track> tracks;
+    private int currentTrackIndex;
+    private boolean hasPendingTrack;
 
-    private static MediaPlayer mediaPlayer;
-    private static Track currentTrack;
-    private static ArrayList<Track> tracks;
-    private static int currentTrackIndex;
-    private static boolean hasPendingTrack;
-    private static DoubleProperty currentTime = new SimpleDoubleProperty();
-
-    public static void initialize()
+    public void initialize()
     {
         try
         {
@@ -68,7 +63,7 @@ public class TrackManager
         }
     }
 
-    public static void toggleTrack(Track queuedTrack)
+    public void toggleTrack(Track queuedTrack)
     {
         if(hasPendingTrack && currentTrack != null)
         {
@@ -101,7 +96,8 @@ public class TrackManager
                 }
 
                 mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.currentTimeProperty().addListener(TrackManager::incrementCurrentTime);
+                mediaPlayer.currentTimeProperty().addListener(this::incrementCurrentTime);
+                mediaPlayer.setOnReady(this::mediaInformationLoaded);
 
                 currentTrack = queuedTrack;
                 currentTrackIndex = tracks.indexOf(currentTrack);
@@ -119,11 +115,6 @@ public class TrackManager
                 case STOPPED:
                 case UNKNOWN:
                     mediaPlayer.play();
-
-                    if(onTrackStarted.canExecute())
-                    {
-                        onTrackStarted.execute();
-                    }
                     break;
                 default:
                     break;
@@ -139,67 +130,78 @@ public class TrackManager
         }
     }
 
-    public static void pendTrack(Track track)
+    public void mediaInformationLoaded()
+    {
+        currentTrackDuration.set(mediaPlayer.getTotalDuration().toSeconds());
+    }
+
+    public void pendTrack(Track track)
     {
         currentTrack = track;
         hasPendingTrack = true;
     }
 
-    public static Track getPrevious()
+    public Track getPrevious()
     {
         int previousIndex = currentTrackIndex - 1;
         Track previousTrack = tracks.get(previousIndex);
         return previousTrack;
     }
 
-    public static Track getNext()
+    public Track getNext()
     {
         int nextIndex = currentTrackIndex + 1;
         Track nextTrack = tracks.get(nextIndex);
         return nextTrack;
     }
 
-    private static void incrementCurrentTime(Observable observable)
+    private void incrementCurrentTime(Observable observable)
     {
         currentTime.set(mediaPlayer.getCurrentTime().toSeconds());
-
-        if(onElapsedTimeChanged.canExecute())
-        {
-            onElapsedTimeChanged.execute();
-        }
     }
 
-    public static MediaPlayer getMediaPlayer() {
+    public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
     }
 
-    public static Track getCurrentTrack() {
+    public Track getCurrentTrack() {
         return currentTrack;
     }
 
-    public static void setCurrentTrack(Track currentTrack) {
-        TrackManager.currentTrack = currentTrack;
+    public void setCurrentTrack(Track currentTrack) {
+        this.currentTrack = currentTrack;
     }
 
-    public static ArrayList<Track> getTracks() {
+    public ArrayList<Track> getTracks() {
         return tracks;
     }
 
-    public static void setTracks(ArrayList<Track> tracks) {
-        TrackManager.tracks = tracks;
+    public void setTracks(ArrayList<Track> tracks) {
+        this.tracks = tracks;
     }
 
-    public static int getCurrentTrackIndex() {
+    public int getCurrentTrackIndex() {
         return currentTrackIndex;
     }
 
-    public static DoubleProperty currentTimeProperty()
+    // Bindable properties
+
+    private DoubleProperty currentTime = new SimpleDoubleProperty();
+
+    public DoubleProperty currentTimeProperty()
     {
         return currentTime;
     }
 
-    public static double getCurrentTime()
+    public double getCurrentTime()
     {
         return currentTime.get();
+    }
+
+    private DoubleProperty currentTrackDuration = new SimpleDoubleProperty();
+
+    public DoubleProperty currentTrackDurationProperty()
+    {
+        return currentTrackDuration;
     }
 }

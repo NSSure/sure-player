@@ -2,7 +2,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<TableView fx:id="trackTable" fx:controller="Default.DefaultController" xmlns:fx="http://javafx.com/fxml">
+<TableView fx:id="trackTable" fx:controller="Tracks.TracksController" xmlns:fx="http://javafx.com/fxml">
     <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
     </columnResizePolicy>

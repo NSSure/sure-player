@@ -1,26 +1,36 @@
 package Layout;
 
-import EventSystem.EventHandler;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
+
+import Tracks.TracksController;
+import EventSystem.EventHandler;
+import Utilities.AppGlobal;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import Models.Track;
 import Utilities.TrackManager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.util.Duration;
 
 import java.io.IOException;
-
 /**
  * Created on 4/8/2018 by Nick Gordon
  */
 public class LayoutController
 {
+    public TrackManager trackManager;
+
+    @FXML
+    private TracksController tracksController;
+
     @FXML
     private BorderPane sceneBase;
 
@@ -31,22 +41,34 @@ public class LayoutController
     private Label lblCurrentTimeElapsed;
 
     @FXML
-    private Label lblTotalDuration;
+    private Label lblTrackDuration;
+
+    @FXML
+    private Button btnTogglePlayback;
+
+    private BooleanProperty isTogglePlaybackDisabled = new SimpleBooleanProperty(true);
 
     public LayoutController()
     {
-        TrackManager.onTrackStarted = new EventHandler(this::onTrackStarted);
-        TrackManager.onElapsedTimeChanged = new EventHandler(this::onElapseTimeChanged);
+        // Creates the singleton for the TrackManager.
+        AppGlobal.init();
+        trackManager = AppGlobal.getTrackManagerInstance();
     }
 
     public void initialize()
     {
+        configure();
+
         try
         {
-            TrackManager.initialize();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Tracks/Tracks.fxml"));
 
-            Parent defaultCenterNode = FXMLLoader.load(getClass().getResource("/Default/Default.fxml"));
+            Parent defaultCenterNode = loader.load();
+
             sceneBase.setCenter(defaultCenterNode);
+
+            tracksController = loader.getController();
+            tracksController.onTrackSelected = new EventHandler(this::onTrackSelected);
         }
         catch(Exception ex)
         {
@@ -54,16 +76,59 @@ public class LayoutController
         }
     }
 
-    // Events
-
-    public void onTrackStarted()
+    public void configure()
     {
+        trackManager.currentTrackDurationProperty().addListener(this::currentMediaStartupFinished);
+        trackManager.currentTimeProperty().addListener(this::onElapseTimeChanged);
 
+        btnTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
     }
 
-    public void onElapseTimeChanged()
+    public void loadCenterPane(String resourcePath)
     {
-        playbackProgress.setValue(TrackManager.getCurrentTime());
+        try
+        {
+            Parent node = FXMLLoader.load(getClass().getResource(resourcePath));
+            sceneBase.setCenter(node);
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void currentMediaStartupFinished(Observable observable)
+    {
+        double totalDurationInSeconds = trackManager.getMediaPlayer().getTotalDuration().toSeconds();
+
+        int totalSeconds = (int)totalDurationInSeconds;
+
+        //int hours = totalSecs / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        lblTrackDuration.setText(String.format("%02d:%02d", minutes, seconds));
+
+        playbackProgress.setMax(totalDurationInSeconds);
+    }
+
+    private void onElapseTimeChanged(Observable observable)
+    {
+        double elapsedTime = trackManager.getCurrentTime();
+
+        int totalSeconds = (int)elapsedTime;
+
+        //int hours = totalSecs / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        lblCurrentTimeElapsed.setText(String.format("%02d:%02d", minutes, seconds));
+        playbackProgress.setValue(elapsedTime);
+    }
+
+    private void onTrackSelected()
+    {
+        isTogglePlaybackDisabled.set(false);
     }
 
     // FXML Functions
@@ -71,57 +136,41 @@ public class LayoutController
     @FXML
     public void toPlaylist(MouseEvent event)
     {
-        try
-        {
-            Parent node = FXMLLoader.load(getClass().getResource("/Playlist/Playlist.fxml"));
-            sceneBase.setCenter(node);
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
-        }
+        loadCenterPane("/Playlist/Playlist.fxml");
     }
 
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        try
-        {
-            Parent node = FXMLLoader.load(getClass().getResource("/Default/Default.fxml"));
-            sceneBase.setCenter(node);
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
-        }
+        loadCenterPane("/Tracks/Tracks.fxml");
     }
 
     @FXML
     public void onPreviousClicked(MouseEvent event)
     {
-        Track queuedPreviousTrack = TrackManager.getPrevious();
+        Track queuedPreviousTrack = trackManager.getPrevious();
 
         if(queuedPreviousTrack != null)
         {
-            TrackManager.toggleTrack(queuedPreviousTrack);
+            trackManager.toggleTrack(queuedPreviousTrack);
         }
     }
 
     @FXML
     public void onStartClicked(MouseEvent event)
     {
-        Track currentTrack = TrackManager.getCurrentTrack();
-        TrackManager.toggleTrack(currentTrack);
+        Track currentTrack = trackManager.getCurrentTrack();
+        trackManager.toggleTrack(currentTrack);
     }
 
     @FXML
     public void onNextClicked(MouseEvent event)
     {
-        Track nextTrack = TrackManager.getNext();
+        Track nextTrack = trackManager.getNext();
 
         if(nextTrack != null)
         {
-            TrackManager.toggleTrack(nextTrack);
+            trackManager.toggleTrack(nextTrack);
         }
     }
 }

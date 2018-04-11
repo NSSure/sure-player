@@ -26,6 +26,8 @@ public class Main extends Application
 
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);
+        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(600);
         primaryStage.show();
     }
 
