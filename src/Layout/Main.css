@@ -2,6 +2,10 @@
     -fx-background-color: #1E1E1E;
 }
 
+.header {
+    -fx-background-color: #1E1E1E;
+}
+
 .footer {
     -fx-background-color: #1E1E1E;
 }
@@ -11,7 +15,7 @@
 }
 
 .slider .track {
-    -fx-background-color: #1E1E1E;
+    -fx-background-color: #333333;
 }
 
 .button {
@@ -31,43 +35,17 @@
 }
 
 .side-bar {
-    -fx-background-color: #333333;
-}
-
-.table-view {
-    -fx-base: transparent;
-    -fx-focus-color: transparent;
-    -fx-background-color: transparent;
-    -fx-control-inner-background-alt: -fx-control-inner-background;
-}
-
-.table-view .table-column {
-    -fx-alignment: CENTER-LEFT;
-}
-
-.table-view .table-row-cell {
-    -fx-background-color: #1E1E1E;
-    -fx-table-cell-border-color: transparent;
-    -fx-cell-size: 40px;
-}
-
-.table-view .table-row-cell:selected {
-    -fx-background-color: #333333; 
-    -fx-faint-focus-color: transparent;
- }
-
-.table-view .table-row-cell .text {
-    -fx-fill: #ADADAD;
-    -fx-font-size: 14px;
+    -fx-background-color: #181818;
 }
 
 .playbackControls {
-    -fx-background-color: #282828;
+    -fx-background-color: #121212;
 }
 
 .text-field {
-    -fx-background-color: #333333;
-    -fx-text-fill: #A7A7A7;
+    -fx-background-color: #A7A7A7;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #555555;
     -fx-font-size: 16px;
 }
 
@@ -79,4 +57,59 @@
     -fx-border-style: solid;
     -fx-border-width: 0 0 1 0;
     -fx-border-color: #333333;
+}
+
+/*
+source for table styling code base - https://stackoverflow.com/questions/33938811/styling-a-tableview-in-css-javafx
+*/
+
+.table-view{
+   -fx-background-color: transparent;
+   -fx-border-color: transparent;
+}
+
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: #181818;
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: #A7A7A7;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: #A7A7A7;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #1E1E1E;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: #2B2B2B;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #116AF8;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background,
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button,
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
 }

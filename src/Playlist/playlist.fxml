@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Separator?>
-<VBox fx:controller="Playlist.PlaylistController" xmlns:fx="http://javafx.com/fxml" spacing="10">
+<VBox fx:id="sceneBase" fx:controller="Playlist.PlaylistController" xmlns:fx="http://javafx.com/fxml" spacing="10" style="-fx-background-color: linear-gradient(#131313 0%, #333333 100%);">
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
@@ -23,7 +23,7 @@
         <TextField promptText="Give your playlist a description here" />
     </VBox>
 
-    <ImageView>
+    <ImageView fx:id="playlistImagePreview" onMouseClicked="#onPlaylistImageClicked">
         <image>
             <Image url="@/Images/placeholder.png" />
         </image>

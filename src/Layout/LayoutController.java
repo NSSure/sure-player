@@ -1,5 +1,6 @@
 package Layout;
 
+import Icons.PlaybackIcons;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 
@@ -19,6 +20,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import jiconfont.icons.FontAwesome;
+import jiconfont.javafx.IconFontFX;
+import jiconfont.javafx.IconNode;
 
 import java.io.IOException;
 /**
@@ -44,15 +51,30 @@ public class LayoutController
     private Label lblTrackDuration;
 
     @FXML
-    private Button btnTogglePlayback;
+    private Label lblTogglePlayback;
+
+    @FXML
+    private Label lblStepBackward;
+
+    @FXML
+    private Label lblStepForward;
+
+    @FXML
+    private Label lblSoundLevel;
 
     private BooleanProperty isTogglePlaybackDisabled = new SimpleBooleanProperty(true);
+
+    private PlaybackIcons playbackIcons;
 
     public LayoutController()
     {
         // Creates the singleton for the TrackManager.
         AppGlobal.init();
         trackManager = AppGlobal.getTrackManagerInstance();
+
+        IconFontFX.register(FontAwesome.getIconFont());
+
+        playbackIcons = new PlaybackIcons();
     }
 
     public void initialize()
@@ -78,10 +100,16 @@ public class LayoutController
 
     public void configure()
     {
+        lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
+        lblStepBackward.setGraphic(playbackIcons.getStepBackwardIcon());
+        lblStepForward.setGraphic(playbackIcons.getStepForwardIcon());
+
+        lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
+
         trackManager.currentTrackDurationProperty().addListener(this::currentMediaStartupFinished);
         trackManager.currentTimeProperty().addListener(this::onElapseTimeChanged);
 
-        btnTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
+        lblTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
     }
 
     public void loadCenterPane(String resourcePath)
@@ -171,6 +199,19 @@ public class LayoutController
         if(nextTrack != null)
         {
             trackManager.toggleTrack(nextTrack);
+        }
+    }
+
+    @FXML
+    public void onSoundLevelIconClicked(MouseEvent event)
+    {
+        if(lblSoundLevel.getGraphic() == playbackIcons.getDefaultVolumeIcon())
+        {
+            lblSoundLevel.setGraphic(playbackIcons.getMutedVolumeIcon());
+        }
+        else
+        {
+            lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
         }
     }
 }

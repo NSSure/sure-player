@@ -10,5 +10,7 @@
     <orderEntry type="library" name="com.google.code.gson:gson:2.8.2" level="project" />
     <orderEntry type="library" name="org.hildan.fxgson:fx-gson:3.1.0" level="project" />
     <orderEntry type="library" name="com.mpatric:mp3agic:0.9.1" level="project" />
+    <orderEntry type="library" name="com.github.jiconfont:jiconfont-javafx:1.0.0" level="project" />
+    <orderEntry type="library" name="com.github.jiconfont:jiconfont-font_awesome:4.7.0.0" level="project" />
   </component>
 </module>
