@@ -32,7 +32,7 @@
     <Separator />
 
     <HBox GridPane.rowIndex="2" spacing="10">
-        <Button text="CREATE" />
-        <Button text="CANCEL" styleClass="btn-danger" />
+        <Button text="CREATE" onMouseClicked="#onSaveClicked" />
+        <Button text="CANCEL" onMouseClicked="#onCancelClicked" styleClass="btn-danger" />
     </HBox>
 </VBox>

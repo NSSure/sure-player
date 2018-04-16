@@ -1,14 +1,18 @@
 package Playlist;
 
+import EventSystem.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
+import javafx.stage.*;
 
 import java.io.File;
 
@@ -43,5 +47,22 @@ public class PlaylistController
 
             playlistImagePreview.setImage(croppedImage);
         }
+    }
+
+    @FXML
+    private void onSaveClicked(MouseEvent event)
+    {
+        System.out.println("SAVE PLAYLIST CLICKED");
+    }
+
+    @FXML
+    private void onCancelClicked(MouseEvent event)
+    {
+        System.out.println("CANCEL PLAYLIST CLICKED");
+    }
+
+    @FXML void onImageCropperClosed(WindowEvent event)
+    {
+        System.out.println("IMAGE CROPPER STAGE CLOSED");
     }
 }

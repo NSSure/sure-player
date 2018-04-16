@@ -59,6 +59,22 @@
     -fx-border-color: #333333;
 }
 
+.menu-button {
+    -fx-background-color: transparent;
+}
+
+.menu-button .context-menu {
+    -fx-background-color: transparent;
+}
+
+.menu-button .menu-item {
+    -fx-width: 200px;
+}
+
+.menu-button .menu-item:hover {
+    -fx-background-color: #116AF8;
+}
+
 /*
 source for table styling code base - https://stackoverflow.com/questions/33938811/styling-a-tableview-in-css-javafx
 */

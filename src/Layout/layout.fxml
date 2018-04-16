@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import jiconfont.javafx.IconNode?>
-<?import jiconfont.icons.FontAwesome?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
 
 <BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
@@ -20,14 +20,10 @@
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <items>
-                <Label style="-fx-font-size: 14px;" text="Welcome John Doe" />
+            <Region HBox.hgrow="ALWAYS" />
 
-                <Region HBox.hgrow="ALWAYS" />
-
-                <Button text="Tracks" onMouseClicked="#toTrackList" />
-                <Button text="New Playlist" onMouseClicked="#toPlaylist" />
-            </items>
+            <Button text="Tracks" onMouseClicked="#toTrackList" />
+            <Button text="New Playlist" onMouseClicked="#toPlaylist" />
         </ToolBar>
     </top>
     <left>
@@ -88,6 +84,19 @@
                     </Label>
 
                     <Slider minWidth="100" />
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <MenuButton text="Welcome (Current User)" style="fx-background-color: transparent">
+                        <items>
+                            <MenuItem text="Account">
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem text="Settings" />
+                        </items>
+                    </MenuButton>
                 </items>
             </ToolBar>
         </VBox>
