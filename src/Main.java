@@ -19,10 +19,10 @@ public class Main extends Application
     {
         checkLocalStorage(primaryStage);
 
-        Parent root = FXMLLoader.load(getClass().getResource("Layout/Layout.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Layout/layout.fxml"));
 
         Scene scene = new Scene(root, 1280, 720);
-        scene.getStylesheets().add("Layout/main.css");
+        scene.getStylesheets().add("/Layout/main.css");
 
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);
