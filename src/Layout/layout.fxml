@@ -34,7 +34,7 @@
             <HBox alignment="CENTER_LEFT">
                 <ImageView>
                     <image>
-                        <Image url="@/images/placeholder.png" requestedHeight="150" requestedWidth="150" />
+                        <Image url="@/Images/placeholder.png" requestedHeight="150" requestedWidth="150" />
                     </image>
                 </ImageView>
             </HBox>
