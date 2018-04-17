@@ -7,10 +7,16 @@ import java.util.ArrayList;
  */
 public class Playlist
 {
-    private String name;
+    public String name;
     private String description;
     private String ImagePath;
     private ArrayList<String> TrackPaths;
+
+    public Playlist(String name, String description)
+    {
+        this.name = name;
+        this.description = description;
+    }
 
     public String getName() {
         return name;

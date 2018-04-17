@@ -101,6 +101,4 @@
             </ToolBar>
         </VBox>
     </bottom>
-
-    <!--<fx:include source="../Tracks/Tracks.fxml" fx:id="tracksController" />-->
 </BorderPane>

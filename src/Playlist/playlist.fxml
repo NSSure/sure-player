@@ -16,11 +16,11 @@
 
     <VBox GridPane.rowIndex="0" spacing="5">
         <Label styleClass="lbl-large" text="Name" />
-        <TextField promptText="New Playlist Name " />
+        <TextField fx:id="txtName" promptText="New Playlist Name" />
     </VBox>
     <VBox GridPane.rowIndex="1" spacing="5">
         <Label styleClass="lbl-large" text="Description" />
-        <TextField promptText="Give your playlist a description here" />
+        <TextField fx:id="txtDescription" promptText="Give your playlist a description here" />
     </VBox>
 
     <ImageView fx:id="playlistImagePreview" onMouseClicked="#onPlaylistImageClicked">

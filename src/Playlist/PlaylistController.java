@@ -1,20 +1,23 @@
 package Playlist;
 
 import EventSystem.EventHandler;
+import Models.Playlist;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+
+import javafx.scene.image.PixelReader;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.*;
-
 import java.io.File;
+import javafx.stage.*;
+import Utilities.LocalStorage;
 
 public class PlaylistController
 {
@@ -25,9 +28,24 @@ public class PlaylistController
     private ImageView playlistImagePreview;
 
     @FXML
-    private void initialize()
-    {
+    private TextField txtName;
 
+    @FXML
+    private TextField txtDescription;
+
+    private Playlist playlist;
+
+    public EventHandler onPlaylistCreationAborted;
+    public EventHandler onPlaylistCreationFinished;
+
+    private boolean validateRequiredFields()
+    {
+        if(txtName.getText().isEmpty() || txtDescription.getText().isEmpty())
+        {
+            return false;
+        }
+
+        return true;
     }
 
     @FXML
@@ -52,17 +70,47 @@ public class PlaylistController
     @FXML
     private void onSaveClicked(MouseEvent event)
     {
-        System.out.println("SAVE PLAYLIST CLICKED");
+        if(validateRequiredFields())
+        {
+            Playlist playlist = new Playlist(txtName.getText(), txtDescription.getText());
+
+            LocalStorage localStorage = new LocalStorage();
+
+            if(!localStorage.doesFileExist(playlist.getName()))
+            {
+                localStorage.write(playlist.getName(), playlist);
+
+                if(onPlaylistCreationFinished != null && onPlaylistCreationFinished.canExecute())
+                {
+                    onPlaylistCreationFinished.execute();
+                }
+            }
+            else
+            {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                alert.setTitle("Playlist Already Exists");
+                alert.setContentText("Whoops! A playlist with that name already exists.  Please try again.");
+                alert.showAndWait();
+            }
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+            alert.setTitle("Required Fields Missing");
+            alert.setHeaderText(null);
+            alert.setContentText("Whoops! A playlist needs to have a name and a description.  Please fill out the required fields and try again.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void onCancelClicked(MouseEvent event)
     {
-        System.out.println("CANCEL PLAYLIST CLICKED");
-    }
-
-    @FXML void onImageCropperClosed(WindowEvent event)
-    {
-        System.out.println("IMAGE CROPPER STAGE CLOSED");
+        if(onPlaylistCreationAborted != null && onPlaylistCreationAborted.canExecute())
+        {
+            onPlaylistCreationAborted.execute();
+        }
     }
 }

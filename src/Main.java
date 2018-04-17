@@ -1,3 +1,4 @@
+import Utilities.LocalStorage;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,6 +30,9 @@ public class Main extends Application
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.show();
+
+        LocalStorage localStorage = new LocalStorage();
+        localStorage.read("LocalTrackSource");
     }
 
     private void checkLocalStorage(Stage primaryStage)

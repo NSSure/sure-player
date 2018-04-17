@@ -1,6 +1,7 @@
 package Layout;
 
 import Icons.PlaybackIcons;
+import Playlist.PlaylistController;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 
@@ -33,10 +34,7 @@ import java.io.IOException;
  */
 public class LayoutController
 {
-    public TrackManager trackManager;
-
-    @FXML
-    private TracksController tracksController;
+    private TrackManager trackManager;
 
     @FXML
     private BorderPane sceneBase;
@@ -80,25 +78,10 @@ public class LayoutController
     public void initialize()
     {
         configure();
-
-        try
-        {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Tracks/Tracks.fxml"));
-
-            Parent defaultCenterNode = loader.load();
-
-            sceneBase.setCenter(defaultCenterNode);
-
-            tracksController = loader.getController();
-            tracksController.onTrackSelected = new EventHandler(this::onTrackSelected);
-        }
-        catch(Exception ex)
-        {
-            System.out.println(ex.getMessage());
-        }
+        toTrackList(null);
     }
 
-    public void configure()
+    private void configure()
     {
         lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
         lblStepBackward.setGraphic(playbackIcons.getStepBackwardIcon());
@@ -112,17 +95,22 @@ public class LayoutController
         lblTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
     }
 
-    public void loadCenterPane(String resourcePath)
+    private FXMLLoader loadCenterPane(String resourcePath)
     {
         try
         {
-            Parent node = FXMLLoader.load(getClass().getResource(resourcePath));
-            sceneBase.setCenter(node);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+            Parent centerNode = loader.load();
+            sceneBase.setCenter(centerNode);
+
+            return loader;
         }
         catch (IOException ex)
         {
             System.out.println(ex.getMessage());
         }
+
+        return null;
     }
 
     private void currentMediaStartupFinished(Observable observable)
@@ -159,18 +147,41 @@ public class LayoutController
         isTogglePlaybackDisabled.set(false);
     }
 
+    private void onPlaylistCreationAborted()
+    {
+        toTrackList(null);
+    }
+
+    private void onPlaylistCreationFinished()
+    {
+        toTrackList(null);
+    }
+
     // FXML Functions
 
     @FXML
     public void toPlaylist(MouseEvent event)
     {
-        loadCenterPane("/Playlist/Playlist.fxml");
+        FXMLLoader loader = loadCenterPane("/Playlist/Playlist.fxml");
+
+        if(loader != null)
+        {
+            PlaylistController playlistController = loader.getController();
+            playlistController.onPlaylistCreationFinished = new EventHandler(this::onPlaylistCreationFinished);
+            playlistController.onPlaylistCreationAborted = new EventHandler(this::onPlaylistCreationAborted);
+        }
     }
 
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        loadCenterPane("/Tracks/Tracks.fxml");
+        FXMLLoader loader = loadCenterPane("/Tracks/Tracks.fxml");
+
+        if(loader != null)
+        {
+            TracksController tracksController = loader.getController();
+            tracksController.onTrackSelected = new EventHandler(this::onTrackSelected);
+        }
     }
 
     @FXML
