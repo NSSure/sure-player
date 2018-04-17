@@ -1,2 +1,3 @@
 Mp3 tags - https://github.com/mpatric/mp3agic
 jIconFont FontAwesome - http://jiconfont.github.io/javafx
+gtignore - https://github.com/akshaybabloo/JavaFX/blob/master/.gitignore
