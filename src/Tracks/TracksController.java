@@ -2,29 +2,31 @@ package Tracks;
 
 import EventSystem.EventHandler;
 import Utilities.AppGlobal;
-import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.*;
+import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 
 import javafx.collections.ObservableList;
 import javafx.scene.input.MouseButton;
 
-import Utilities.TrackManager;
-
 import Models.Track;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import jiconfont.icons.FontAwesome;
+import jiconfont.javafx.IconFontFX;
+import jiconfont.javafx.IconNode;
 
 public class TracksController
 {
     @FXML
-    private TableView trackTable;
+    private TableView<Track> trackTable;
 
-    private ObservableList<Track> tracks;
+    private IntegerProperty hoverIndex = new SimpleIntegerProperty(-2);
 
     public EventHandler onTrackSelected;
 
@@ -32,10 +34,91 @@ public class TracksController
 
     public void initialize()
     {
-        tracks = FXCollections.observableArrayList(AppGlobal.getTrackManagerInstance().getTracks());
+        // Source item hover binding taken from - https://stackoverflow.com/questions/44094265/adding-hover-listener-to-cells-of-a-specific-column-in-javafx-table
+
+        IconFontFX.register(FontAwesome.getIconFont());
+
+        ObservableList<Track> tracks = FXCollections.observableArrayList(AppGlobal.getTrackManagerInstance().getTracks());
         trackTable.setItems(tracks);
 
+        trackTable.setRowFactory(tableView -> {
+            final TableRow<Track> row = new TableRow<>();
+
+            row.hoverProperty().addListener((observable, wasHover, nowHover) -> {
+                if(nowHover)
+                {
+                    hoverIndex.set(row.getIndex());
+                }
+            });
+
+            return row;
+        });
+
+        TableColumn<Track, Track> actionColumn = new TableColumn<>("Action");
+
+        actionColumn.setCellFactory(col -> {
+            IconNode actionIcon = new IconNode(FontAwesome.ELLIPSIS_H);
+            actionIcon.setIconSize(25);
+            actionIcon.setFill(Color.valueOf("#A7A7A7"));
+
+            MenuButton trackMenuButton = new MenuButton();
+
+            MenuItem addToPlaylistItem = new MenuItem("Add to Playlist");
+            addToPlaylistItem.setOnAction(this::onAddToPlaylistClicked);
+
+            MenuItem goToArtistItem = new MenuItem("Go to Artist");
+            goToArtistItem.setOnAction(this::onGoToArtistClicked);
+
+            MenuItem goToAlbumItem = new MenuItem("Go to Album");
+            goToAlbumItem.setOnAction(this::onGoToAlbumClicked);
+
+            MenuItem removeFromLibraryItem = new MenuItem("Remove from Library");
+            removeFromLibraryItem.setOnAction(this::onRemoveFromLibraryClicked);
+
+            trackMenuButton.getItems().addAll(addToPlaylistItem, goToArtistItem, goToAlbumItem, removeFromLibraryItem);
+            trackMenuButton.setGraphic(actionIcon);
+
+            TableCell<Track, Track> cell = new TableCell<Track, Track>() {
+                @Override
+                public void updateItem(Track person, boolean empty) {
+                    super.updateItem(person, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(trackMenuButton);
+                    }
+                }
+            };
+
+            BooleanBinding cellRowHovered = Bindings.createBooleanBinding(() -> hoverIndex.get() == cell.getIndex(), cell.itemProperty(), hoverIndex);
+            trackMenuButton.visibleProperty().bind(cellRowHovered);
+
+            return cell;
+        });
+
+        trackTable.getColumns().add(actionColumn);
+
         configure();
+    }
+
+    private void onAddToPlaylistClicked(ActionEvent event)
+    {
+        System.out.println("PLAYLIST");
+    }
+
+    private void onGoToArtistClicked(ActionEvent event)
+    {
+        System.out.println("ARTIST");
+    }
+
+    private void onGoToAlbumClicked(ActionEvent event)
+    {
+        System.out.println("ALBUM");
+    }
+
+    private void onRemoveFromLibraryClicked(ActionEvent event)
+    {
+        System.out.println("REMOVE");
     }
 
     private void configure()

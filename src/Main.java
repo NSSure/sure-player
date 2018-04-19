@@ -1,14 +1,12 @@
 import Utilities.LocalStorage;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +16,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        primaryStage.setOpacity(0.0);
+
         checkLocalStorage(primaryStage);
 
         Parent root = FXMLLoader.load(getClass().getResource("/Layout/layout.fxml"));
@@ -29,7 +29,11 @@ public class Main extends Application
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
+
+        primaryStage.setMaximized(true);
         primaryStage.show();
+
+        primaryStage.setOpacity(1.0);
 
         LocalStorage localStorage = new LocalStorage();
         localStorage.read("LocalTrackSource");

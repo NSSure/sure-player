@@ -83,15 +83,16 @@ public class LayoutController
 
     private void configure()
     {
+        // Set Playback control icons.
         lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
         lblStepBackward.setGraphic(playbackIcons.getStepBackwardIcon());
         lblStepForward.setGraphic(playbackIcons.getStepForwardIcon());
-
         lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
 
         trackManager.currentTrackDurationProperty().addListener(this::currentMediaStartupFinished);
         trackManager.currentTimeProperty().addListener(this::onElapseTimeChanged);
 
+        // Bind the disabled property of the play/pause icon to only be enable when a track is selected.
         lblTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
     }
 

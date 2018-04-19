@@ -14,6 +14,10 @@
     -fx-text-fill: #ADADAD;
 }
 
+.slider .thumb {
+    -fx-background-color: #333333;
+}
+
 .slider .track {
     -fx-background-color: #333333;
 }
@@ -95,6 +99,11 @@ source for table styling code base - https://stackoverflow.com/questions/3393881
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
     -fx-text-fill: #A7A7A7;
+    -fx-alignment: center-left;
+}
+
+.table-view .table-column {
+    -fx-alignment: center-left;
 }
 
 .table-view .column-header {
@@ -103,6 +112,7 @@ source for table styling code base - https://stackoverflow.com/questions/3393881
 
 .table-view .table-cell{
     -fx-text-fill: #A7A7A7;
+    -fx-font-size: 14px;
     -fx-border-color: transparent;
 }
 
@@ -112,8 +122,16 @@ source for table styling code base - https://stackoverflow.com/questions/3393881
     -fx-table-cell-border-color: #2B2B2B;
 }
 
+.table-row-cell:hover{
+    -fx-background-color: #333333;
+}
+
 .table-row-cell:selected {
-    -fx-background-color: #116AF8;
+    -fx-background-color: #333333;
+}
+
+.table-row-cell:empty:odd, .table-row-cell:empty:even {
+    -fx-background-color: transparent;
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical,
@@ -129,3 +147,32 @@ source for table styling code base - https://stackoverflow.com/questions/3393881
 .table-view > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
 }
+
+/*
+* Remove dropdown caret from menu button
+*/
+
+.menu-button > .arrow-button {
+    -fx-padding: 0;
+}
+
+.menu-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
+
+.menu-button .menu-item {
+    -fx-border-color: transparent;
+    -fx-background-color: #333333;
+    -fx-pref-width: 300px;
+    -fx-font-size: 14px;
+}
+
+.menu-button .menu-item:hover {
+    -fx-background-color: #282828;
+}
+
+.menu-button .separator *.line {
+  -fx-border-color: #333333;
+  -fx-border-width: 1 0 0 0 ;
+}
+

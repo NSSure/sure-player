@@ -13,6 +13,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 
+<?import javafx.scene.control.ProgressBar?>
 <BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
         <ToolBar styleClass="header">
