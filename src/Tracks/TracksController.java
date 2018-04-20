@@ -1,34 +1,41 @@
 package Tracks;
 
-import EventSystem.EventHandler;
-import Utilities.AppGlobal;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.*;
-import javafx.event.ActionEvent;
-
 import javafx.fxml.FXML;
 
 import javafx.collections.ObservableList;
 import javafx.scene.input.MouseButton;
+import jiconfont.icons.FontAwesome;
 
+import EventSystem.EventHandler;
+import Utilities.AppGlobal;
+import Utilities.TrackManager;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.*;
+import javafx.event.ActionEvent;
 import Models.Track;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import jiconfont.icons.FontAwesome;
 import jiconfont.javafx.IconFontFX;
 import jiconfont.javafx.IconNode;
 
 public class TracksController
 {
+    private TrackManager trackManager;
+
     @FXML
     private TableView<Track> trackTable;
 
     private IntegerProperty hoverIndex = new SimpleIntegerProperty(-2);
 
     public EventHandler onTrackSelected;
+
+    public TracksController()
+    {
+        trackManager = AppGlobal.getTrackManagerInstance();
+    }
 
     // Lifecycle
 
@@ -51,10 +58,14 @@ public class TracksController
                 }
             });
 
+            trackManager.currentTrackIndexProperty().addListener((observable) -> {
+               trackTable.getSelectionModel().select(trackManager.getCurrentTrackIndex());
+            });
+
             return row;
         });
 
-        TableColumn<Track, Track> actionColumn = new TableColumn<>("Action");
+        TableColumn<Track, Track> actionColumn = new TableColumn<>("");
 
         actionColumn.setCellFactory(col -> {
             IconNode actionIcon = new IconNode(FontAwesome.ELLIPSIS_H);

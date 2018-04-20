@@ -7,13 +7,11 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Tooltip?>
 <BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
         <ToolBar styleClass="header">
@@ -32,17 +30,6 @@
             <padding>
                 <Insets top="20" right="10" bottom="10" left="10"/>
             </padding>
-            <HBox alignment="CENTER_LEFT">
-                <ImageView>
-                    <image>
-                        <Image url="@/Images/placeholder.png" requestedHeight="150" requestedWidth="150" />
-                    </image>
-                </ImageView>
-            </HBox>
-            <VBox>
-                <Label style="-fx-font-weight: bold; -fx-font-size: 14" text="SONG NAME" />
-                <Label text="Artist Name" />
-            </VBox>
         </VBox>
     </left>
     <center>
@@ -58,9 +45,21 @@
                 <HBox spacing="30" alignment="CENTER">
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Label fx:id="lblStepBackward" onMouseClicked="#onPreviousClicked" />
-                    <Label fx:id="lblTogglePlayback" onMouseClicked="#onStartClicked" />
-                    <Label fx:id="lblStepForward" onMouseClicked="#onNextClicked" />
+                    <Label fx:id="lblStepBackward" onMouseClicked="#onPreviousClicked">
+                        <tooltip>
+                            <Tooltip text="Previous" />
+                        </tooltip>
+                    </Label>
+                    <Label fx:id="lblTogglePlayback" onMouseClicked="#onStartClicked">
+                        <tooltip>
+                            <Tooltip text="Play/Pause" />
+                        </tooltip>
+                    </Label>
+                    <Label fx:id="lblStepForward" onMouseClicked="#onNextClicked">
+                        <tooltip>
+                            <Tooltip text="Next" />
+                        </tooltip>
+                    </Label>
 
                     <Region HBox.hgrow="ALWAYS" />
                 </HBox>
@@ -85,6 +84,22 @@
                     </Label>
 
                     <Slider minWidth="100" />
+
+                    <Label fx:id="lblTrackView" onMouseClicked="#onTrackViewClicked">
+                        <padding>
+                            <Insets right="10" left="10" />
+                        </padding>
+
+                        <tooltip>
+                            <Tooltip text="Queue/Track" />
+                        </tooltip>
+                    </Label>
+
+                    <Label fx:id="lblShuffle" onMouseClicked="#onShuffleClicked">
+                        <tooltip>
+                            <Tooltip text="Shuffle" />
+                        </tooltip>
+                    </Label>
 
                     <Region HBox.hgrow="ALWAYS" />
 

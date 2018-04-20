@@ -1,34 +1,28 @@
 package Utilities;
 
-import com.mpatric.mp3agic.ID3v2;
-import javafx.beans.Observable;
-
 import Models.Track;
 import com.google.gson.Gson;
-
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.hildan.fxgson.FxGson;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 
 public class TrackManager
 {
-    private MediaPlayer mediaPlayer;
-    private Track currentTrack;
-    private ArrayList<Track> tracks;
-    private int currentTrackIndex;
+    private LinkedList<Track> tracks;
+
     private boolean hasPendingTrack;
+    private boolean isShuffle = false;
 
     public void initialize()
     {
@@ -45,31 +39,25 @@ public class TrackManager
             for(Track track : trackSource)
             {
                 System.out.println("Track: " + track.getName());
-
-                Mp3File mp3 = new Mp3File(track.getPath());
-                ID3v2 tags = mp3.getId3v2Tag();
-                track.setTags(tags);
             }
 
-            tracks = new ArrayList<>(Arrays.asList(trackSource));
+            tracks = new LinkedList<>(Arrays.asList(trackSource));
+            setQueuedTracks(new LinkedList<>(tracks));
+            setQueuedTrack(tracks.get(0));
         }
-        catch (IOException | UnsupportedTagException | InvalidDataException ex)
+        catch (Exception ex)
         {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-
-            alert.setHeaderText("Failed to Read Local Track Storage");
-            alert.setContentText(ex.getMessage() + " in " + ex.getClass());
-            alert.showAndWait();
+            System.out.println(ex.getMessage());
         }
     }
 
     public void toggleTrack(Track queuedTrack)
     {
-        if(hasPendingTrack && currentTrack != null)
+        if(hasPendingTrack && getQueuedTrack() != null)
         {
-            if(currentTrack != null)
+            if(getQueuedTrack() != null)
             {
-                queuedTrack = currentTrack;
+                queuedTrack = getQueuedTrack();
             }
             else
             {
@@ -87,34 +75,33 @@ public class TrackManager
         {
             Media media = new Media(Paths.get(queuedTrack.getPath()).toUri().toString());
 
-            if(hasPendingTrack || currentTrack == null || currentTrack.getName().compareToIgnoreCase(queuedTrack.getName()) != 0)
+            if(hasPendingTrack || getQueuedTrack().getName().compareToIgnoreCase(queuedTrack.getName()) != 0)
             {
-                if(mediaPlayer != null)
+                if(mediaPlayer.get() != null)
                 {
-                    mediaPlayer.stop();
+                    mediaPlayer.get().stop();
 
                 }
 
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.currentTimeProperty().addListener(this::incrementCurrentTime);
-                mediaPlayer.setOnReady(this::mediaInformationLoaded);
+                mediaPlayer.set(new MediaPlayer(media));
 
-                currentTrack = queuedTrack;
-                currentTrackIndex = tracks.indexOf(currentTrack);
+                setQueuedTrack(queuedTrack);
+                setCurrentTrackIndex(tracks.indexOf(getQueuedTrack()));
 
                 hasPendingTrack = false;
             }
 
-            MediaPlayer.Status playbackStatus = mediaPlayer.getStatus();
+            MediaPlayer.Status playbackStatus = mediaPlayer.get().getStatus();
 
             switch (playbackStatus)
             {
                 case PLAYING:
-                    mediaPlayer.stop();
+                    mediaPlayer.get().pause();
                     break;
                 case STOPPED:
                 case UNKNOWN:
-                    mediaPlayer.play();
+                case PAUSED:
+                    mediaPlayer.get().play();
                     break;
                 default:
                     break;
@@ -130,78 +117,107 @@ public class TrackManager
         }
     }
 
-    public void mediaInformationLoaded()
-    {
-        currentTrackDuration.set(mediaPlayer.getTotalDuration().toSeconds());
-    }
-
     public void pendTrack(Track track)
     {
-        currentTrack = track;
+        setQueuedTrack(track);
         hasPendingTrack = true;
     }
 
     public Track getPrevious()
     {
-        int previousIndex = currentTrackIndex - 1;
-        Track previousTrack = tracks.get(previousIndex);
-        return previousTrack;
+        int previousIndex = getCurrentTrackIndex() - 1;
+        return getQueuedTracks().get(previousIndex);
     }
 
     public Track getNext()
     {
-        int nextIndex = currentTrackIndex + 1;
-        Track nextTrack = tracks.get(nextIndex);
-        return nextTrack;
+        int nextIndex = getCurrentTrackIndex() + 1;
+        return getQueuedTracks().get(nextIndex);
     }
 
-    private void incrementCurrentTime(Observable observable)
+    public boolean isShuffle() {
+        return isShuffle;
+    }
+
+    public void setShuffle(boolean isShuffle)
     {
-        currentTime.set(mediaPlayer.getCurrentTime().toSeconds());
+        this.isShuffle = isShuffle;
+
+        if(this.isShuffle)
+        {
+            LinkedList<Track> shuffledList = new LinkedList<>(getQueuedTracks());
+            Collections.shuffle(shuffledList);
+
+            setQueuedTracks(shuffledList);
+        }
+        else
+        {
+            setQueuedTracks(tracks);
+        }
     }
 
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
-    }
-
-    public Track getCurrentTrack() {
-        return currentTrack;
-    }
-
-    public void setCurrentTrack(Track currentTrack) {
-        this.currentTrack = currentTrack;
-    }
-
-    public ArrayList<Track> getTracks() {
+    public LinkedList<Track> getTracks() {
         return tracks;
     }
 
-    public void setTracks(ArrayList<Track> tracks) {
+    public void setTracks(LinkedList<Track> tracks) {
         this.tracks = tracks;
     }
 
-    public int getCurrentTrackIndex() {
+    private ObjectProperty<MediaPlayer> mediaPlayer = new SimpleObjectProperty<>();
+
+    public ObjectProperty mediaPlayerProperty()
+    {
+        return mediaPlayer;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer.get();
+    }
+
+    private IntegerProperty currentTrackIndex = new SimpleIntegerProperty();
+
+    public IntegerProperty currentTrackIndexProperty()
+    {
         return currentTrackIndex;
     }
 
-    // Bindable properties
-
-    private DoubleProperty currentTime = new SimpleDoubleProperty();
-
-    public DoubleProperty currentTimeProperty()
-    {
-        return currentTime;
+    public int getCurrentTrackIndex() {
+        return currentTrackIndex.get();
     }
 
-    public double getCurrentTime()
+    public void setCurrentTrackIndex(int index)
     {
-        return currentTime.get();
+        currentTrackIndex.set(index);
     }
 
-    private DoubleProperty currentTrackDuration = new SimpleDoubleProperty();
+    private ObjectProperty<Track> queuedTrack = new SimpleObjectProperty<>();
 
-    public DoubleProperty currentTrackDurationProperty()
+    public ObjectProperty queuedTrackProperty()
     {
-        return currentTrackDuration;
+        return queuedTrack;
+    }
+
+    public void setQueuedTrack(Track currentTrack) {
+        this.queuedTrack.set(currentTrack);
+    }
+
+    public Track getQueuedTrack() {
+        return queuedTrack.get();
+    }
+
+    private ObjectProperty<LinkedList<Track>> queuedTracks = new SimpleObjectProperty<>();
+
+    public ObjectProperty<LinkedList<Track>> queuedTracksProperty()
+    {
+        return queuedTracks;
+    }
+
+    public void setQueuedTracks(LinkedList<Track> queuedTracks) {
+        this.queuedTracks.set(queuedTracks);
+    }
+
+    public LinkedList<Track> getQueuedTracks() {
+        return queuedTracks.get();
     }
 }
