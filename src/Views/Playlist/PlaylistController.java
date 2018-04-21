@@ -1,8 +1,9 @@
-package Playlist;
+package Views.Playlist;
 
 import EventSystem.EventHandler;
 import Models.Playlist;
 
+import Utilities.PlaylistUtility;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.Alert;
@@ -53,7 +54,7 @@ public class PlaylistController
     {
         FileChooser fileChooser = new FileChooser();
 
-        fileChooser.setTitle("Choose Playlist Artwork");
+        fileChooser.setTitle("Choose Views.Playlist Artwork");
         File file = fileChooser.showOpenDialog(sceneBase.getScene().getWindow());
 
         if(file != null)
@@ -73,25 +74,13 @@ public class PlaylistController
         if(validateRequiredFields())
         {
             Playlist playlist = new Playlist(txtName.getText(), txtDescription.getText());
+            PlaylistUtility playlistUtil = new PlaylistUtility();
 
-            LocalStorage localStorage = new LocalStorage();
+            playlistUtil.add(playlist);
 
-            if(!localStorage.doesFileExist(playlist.getName()))
+            if(onPlaylistCreationFinished != null && onPlaylistCreationFinished.canExecute())
             {
-                localStorage.write(playlist.getName(), playlist);
-
-                if(onPlaylistCreationFinished != null && onPlaylistCreationFinished.canExecute())
-                {
-                    onPlaylistCreationFinished.execute();
-                }
-            }
-            else
-            {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-                alert.setTitle("Playlist Already Exists");
-                alert.setContentText("Whoops! A playlist with that name already exists.  Please try again.");
-                alert.showAndWait();
+                onPlaylistCreationFinished.execute();
             }
         }
         else

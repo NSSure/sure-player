@@ -1,0 +1,6 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="sceneBase" fx:controller="Views.Playlist.Details.PlaylistDetailsController" xmlns:fx="http://javafx.com/fxml" spacing="10" style="-fx-background-color: linear-gradient(#131313 0%, #333333 100%);">
+    <Label text="Playlist Details" />
+</VBox>

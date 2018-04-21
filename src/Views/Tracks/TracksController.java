@@ -1,4 +1,4 @@
-package Tracks;
+package Views.Tracks;
 
 import javafx.fxml.FXML;
 
@@ -74,7 +74,7 @@ public class TracksController
 
             MenuButton trackMenuButton = new MenuButton();
 
-            MenuItem addToPlaylistItem = new MenuItem("Add to Playlist");
+            MenuItem addToPlaylistItem = new MenuItem("Add to Views.Playlist");
             addToPlaylistItem.setOnAction(this::onAddToPlaylistClicked);
 
             MenuItem goToArtistItem = new MenuItem("Go to Artist");

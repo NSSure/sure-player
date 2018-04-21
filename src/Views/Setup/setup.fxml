@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.geometry.Insets?>
 
-<VBox fx:controller="Setup.SetupController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="Views.Setup.SetupController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
@@ -20,6 +20,6 @@
     </Separator>
 
     <HBox>
-        <Button fx:id="btnCompleteSetup" text="Complete Setup" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="btnCompleteSetup" text="Complete Views.Setup" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
     </HBox>
 </VBox>

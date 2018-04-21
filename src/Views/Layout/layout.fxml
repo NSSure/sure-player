@@ -1,5 +1,4 @@
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
@@ -10,9 +9,11 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
-
 <?import javafx.scene.control.Tooltip?>
-<BorderPane fx:controller="Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+
+<BorderPane fx:controller="Views.Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
         <ToolBar styleClass="header">
             <padding>
@@ -21,15 +22,24 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <Button text="Tracks" onMouseClicked="#toTrackList" />
-            <Button text="New Playlist" onMouseClicked="#toPlaylist" />
+            <MenuButton text="Options">
+                <items>
+                    <MenuItem text="New Playlist" onAction="#toPlaylist" />
+                </items>
+            </MenuButton>
         </ToolBar>
     </top>
     <left>
-        <VBox styleClass="side-bar" minWidth="200" spacing="20">
-            <padding>
-                <Insets top="20" right="10" bottom="10" left="10"/>
-            </padding>
+        <VBox styleClass="side-bar" maxWidth="200">
+            <Label text="Playlists" style="-fx-font-size: 14px; -fx-font-weight: bold;">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </Label>
+
+            <Separator />
+
+            <fx:include source="/Views/Playlist/Directory/playlist-directory.fxml" VBox.vgrow="ALWAYS" />
         </VBox>
     </left>
     <center>
@@ -91,7 +101,7 @@
                         </padding>
 
                         <tooltip>
-                            <Tooltip text="Queue/Track" />
+                            <Tooltip text="Views.Queue/Track" />
                         </tooltip>
                     </Label>
 

@@ -1,9 +1,8 @@
-package Queue;
+package Views.Queue;
 
 import javafx.fxml.FXML;
 
 import javafx.beans.Observable;
-import javafx.collections.ObservableList;
 
 import Models.Track;
 import Utilities.AppGlobal;

@@ -1,11 +1,9 @@
 import Utilities.LocalStorage;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
 
 import java.io.File;
@@ -20,10 +18,10 @@ public class Main extends Application
 
         checkLocalStorage(primaryStage);
 
-        Parent root = FXMLLoader.load(getClass().getResource("/Layout/layout.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Views/Layout/layout.fxml"));
 
         Scene scene = new Scene(root, 1280, 720);
-        scene.getStylesheets().add("/Layout/main.css");
+        scene.getStylesheets().add("/Views/Layout/main.css");
 
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);
@@ -34,9 +32,6 @@ public class Main extends Application
         primaryStage.show();
 
         primaryStage.setOpacity(1.0);
-
-        LocalStorage localStorage = new LocalStorage();
-        localStorage.read("LocalTrackSource");
     }
 
     private void checkLocalStorage(Stage primaryStage)
@@ -49,7 +44,7 @@ public class Main extends Application
             {
                 Stage dialog = new Stage();
 
-                Parent setupRoot = FXMLLoader.load(getClass().getResource("/Setup/Setup.fxml"));
+                Parent setupRoot = FXMLLoader.load(getClass().getResource("/Views/Setup/Setup.fxml"));
                 dialog.setScene(new Scene(setupRoot));
 
                 dialog.initOwner(primaryStage);

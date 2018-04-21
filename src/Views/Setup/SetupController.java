@@ -1,8 +1,7 @@
-package Setup;
+package Views.Setup;
 
 import Models.Track;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;

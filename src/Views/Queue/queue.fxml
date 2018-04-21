@@ -9,7 +9,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.geometry.Insets?>
 
-<VBox fx:controller="Queue.QueueController" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="Views.Queue.QueueController" xmlns:fx="http://javafx.com/fxml">
     <VBox style="-fx-background-color: linear-gradient(#131313 0%, #333333 100%);">
         <padding>
             <Insets top="15" right="15" bottom="15" left="15"/>
@@ -39,7 +39,7 @@
 
     <Separator />
 
-    <Label text="Upcoming Tracks" style="-fx-font-size: 24px;">
+    <Label text="Upcoming Views.Tracks" style="-fx-font-size: 24px;">
         <padding>
             <Insets top="15" right="15" bottom="15" left="15"/>
         </padding>

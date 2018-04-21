@@ -1,12 +1,15 @@
-package Layout;
+package Views.Layout;
 
 import Icons.ExtendedIconNode;
 import Icons.PlaybackIcons;
-import Playlist.PlaylistController;
+import Models.Playlist;
+import Views.Playlist.Directory.PlaylistDirectoryController;
+import Views.Playlist.PlaylistController;
 import javafx.beans.Observable;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-import Tracks.TracksController;
+import Views.Tracks.TracksController;
 import EventSystem.EventHandler;
 import Utilities.AppGlobal;
 import javafx.beans.property.BooleanProperty;
@@ -17,18 +20,14 @@ import Utilities.TrackManager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.javafx.IconFontFX;
-import jiconfont.javafx.IconNode;
 
 import java.io.IOException;
 /**
@@ -37,6 +36,8 @@ import java.io.IOException;
 public class LayoutController
 {
     private TrackManager trackManager;
+
+
 
     @FXML
     private BorderPane sceneBase;
@@ -189,9 +190,9 @@ public class LayoutController
     // FXML Functions
 
     @FXML
-    public void toPlaylist(MouseEvent event)
+    public void toPlaylist(ActionEvent event)
     {
-        FXMLLoader loader = loadCenterPane("/Playlist/Playlist.fxml");
+        FXMLLoader loader = loadCenterPane("/Views/Playlist/Playlist.fxml");
         currentCenterNode = "playlist";
 
         if(loader != null)
@@ -205,7 +206,7 @@ public class LayoutController
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        FXMLLoader loader = loadCenterPane("/Tracks/Tracks.fxml");
+        FXMLLoader loader = loadCenterPane("/Views/Tracks/Tracks.fxml");
         currentCenterNode = "tracks";
 
         if(loader != null)
@@ -250,7 +251,7 @@ public class LayoutController
         if(currentCenterNode.compareToIgnoreCase("tracks") == 0)
         {
             lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
-            FXMLLoader loader = loadCenterPane("/Queue/queue.fxml");
+            FXMLLoader loader = loadCenterPane("/Views/Queue/queue.fxml");
             currentCenterNode = "queue";
         }
         else if (currentCenterNode.compareToIgnoreCase("queue") == 0)
