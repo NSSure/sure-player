@@ -20,8 +20,7 @@ import java.util.LinkedList;
 public class TrackManager
 {
     private LinkedList<Track> tracks;
-
-    private boolean hasPendingTrack;
+    private LinkedList<Track> unshuffledSet;
     private boolean isShuffle = false;
 
     public void initialize()
@@ -43,7 +42,9 @@ public class TrackManager
 
             tracks = new LinkedList<>(Arrays.asList(trackSource));
             setQueuedTracks(new LinkedList<>(tracks));
-            setQueuedTrack(tracks.get(0));
+
+            setSelectedTrack(tracks.get(0));
+            setCurrentTrack(tracks.get(0));
         }
         catch (Exception ex)
         {
@@ -51,60 +52,29 @@ public class TrackManager
         }
     }
 
-    public void toggleTrack(Track queuedTrack)
+    public void toggleTrack(Track selectedTrack)
     {
-        if(hasPendingTrack && getQueuedTrack() != null)
-        {
-            if(getQueuedTrack() != null)
-            {
-                queuedTrack = getQueuedTrack();
-            }
-            else
-            {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-                alert.setHeaderText("No Track Selected");
-                alert.setContentText("Please select a track before hitting play.");
-                alert.showAndWait();
-
-                return;
-            }
-        }
-
         try
         {
-            Media media = new Media(Paths.get(queuedTrack.getPath()).toUri().toString());
-
-            if(hasPendingTrack || getQueuedTrack().getName().compareToIgnoreCase(queuedTrack.getName()) != 0)
+            if(getMediaPlayer() == null)
             {
-                if(mediaPlayer.get() != null)
+                if(selectedTrack != null)
                 {
-                    mediaPlayer.get().stop();
-
+                    configureMedia(selectedTrack);
                 }
-
-                mediaPlayer.set(new MediaPlayer(media));
-
-                setQueuedTrack(queuedTrack);
-                setCurrentTrackIndex(tracks.indexOf(getQueuedTrack()));
-
-                hasPendingTrack = false;
+                else
+                {
+                    configureMedia(getCurrentTrack());
+                }
             }
 
-            MediaPlayer.Status playbackStatus = mediaPlayer.get().getStatus();
-
-            switch (playbackStatus)
+            if(getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING)
             {
-                case PLAYING:
-                    mediaPlayer.get().pause();
-                    break;
-                case STOPPED:
-                case UNKNOWN:
-                case PAUSED:
-                    mediaPlayer.get().play();
-                    break;
-                default:
-                    break;
+                getMediaPlayer().pause();
+            }
+            else if (getMediaPlayer().getStatus() == MediaPlayer.Status.PAUSED || getMediaPlayer().getStatus() == MediaPlayer.Status.UNKNOWN)
+            {
+                getMediaPlayer().play();
             }
         }
         catch (Exception ex)
@@ -117,22 +87,58 @@ public class TrackManager
         }
     }
 
-    public void pendTrack(Track track)
+    public void configureMedia(Track track)
     {
-        setQueuedTrack(track);
-        hasPendingTrack = true;
+        Media media = new Media(Paths.get(track.getPath()).toUri().toString());
+
+        if(mediaPlayer.get() != null)
+        {
+            if(mediaPlayer.get().getStatus() == MediaPlayer.Status.PLAYING)
+            {
+                mediaPlayer.get().stop();
+            }
+        }
+
+        mediaPlayer.set(new MediaPlayer(media));
+
+        setCurrentTrack(track);
+        setCurrentTrackIndex(tracks.indexOf(getCurrentTrack()));
     }
 
-    public Track getPrevious()
+    public void previous()
     {
-        int previousIndex = getCurrentTrackIndex() - 1;
-        return getQueuedTracks().get(previousIndex);
+        if((getCurrentTrackIndex() - 1) < 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+            alert.setTitle("Invalid Action");
+            alert.setHeaderText(null);
+            alert.setContentText("You are at the beginner of the track queue.  You are unable to go to a previous track");
+            alert.showAndWait();
+        }
+        else
+        {
+            configureMedia(getQueuedTracks().get(getCurrentTrackIndex() - 1));
+            toggleTrack(null);
+        }
     }
 
-    public Track getNext()
+    public void next()
     {
-        int nextIndex = getCurrentTrackIndex() + 1;
-        return getQueuedTracks().get(nextIndex);
+        if((getCurrentTrackIndex() + 1) > (getQueuedTracks().size() - 1))
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+            alert.setTitle("Invalid Action");
+            alert.setHeaderText(null);
+            alert.setContentText("Reached the end of the track queue");
+            alert.showAndWait();
+        }
+        else
+        {
+            configureMedia(getQueuedTracks().get(getCurrentTrackIndex() + 1));
+            toggleTrack(null);
+        }
     }
 
     public boolean isShuffle() {
@@ -148,11 +154,12 @@ public class TrackManager
             LinkedList<Track> shuffledList = new LinkedList<>(getQueuedTracks());
             Collections.shuffle(shuffledList);
 
+            unshuffledSet = new LinkedList<>(getQueuedTracks());
             setQueuedTracks(shuffledList);
         }
         else
         {
-            setQueuedTracks(tracks);
+            setQueuedTracks(unshuffledSet);
         }
     }
 
@@ -175,6 +182,22 @@ public class TrackManager
         return mediaPlayer.get();
     }
 
+    private ObjectProperty<Track> currentTrack = new SimpleObjectProperty<>();
+
+    public ObjectProperty<Track> currentTrackProperty()
+    {
+        return currentTrack;
+    }
+
+    public Track getCurrentTrack() {
+        return currentTrack.get();
+    }
+
+    public void setCurrentTrack(Track track)
+    {
+        currentTrack.set(track);
+    }
+
     private IntegerProperty currentTrackIndex = new SimpleIntegerProperty();
 
     public IntegerProperty currentTrackIndexProperty()
@@ -191,20 +214,22 @@ public class TrackManager
         currentTrackIndex.set(index);
     }
 
-    private ObjectProperty<Track> queuedTrack = new SimpleObjectProperty<>();
+    private ObjectProperty<Track> selectedTrack = new SimpleObjectProperty<>();
 
-    public ObjectProperty queuedTrackProperty()
+    public ObjectProperty<Track> selectedTrackProperty()
     {
-        return queuedTrack;
+        return selectedTrack;
     }
 
-    public void setQueuedTrack(Track currentTrack) {
-        this.queuedTrack.set(currentTrack);
+    public Track getSelectedTrack() {
+        return selectedTrack.get();
     }
 
-    public Track getQueuedTrack() {
-        return queuedTrack.get();
+    public void setSelectedTrack(Track track)
+    {
+        selectedTrack.set(track);
     }
+
 
     private ObjectProperty<LinkedList<Track>> queuedTracks = new SimpleObjectProperty<>();
 
@@ -220,4 +245,6 @@ public class TrackManager
     public LinkedList<Track> getQueuedTracks() {
         return queuedTracks.get();
     }
+
+
 }

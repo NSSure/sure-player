@@ -1,11 +1,15 @@
 package Views.Layout;
 
+import Enums.QueueType;
 import Icons.ExtendedIconNode;
 import Icons.PlaybackIcons;
 import Models.Playlist;
 import Views.Playlist.Directory.PlaylistDirectoryController;
 import Views.Playlist.PlaylistController;
+import Views.Queue.QueueController;
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -35,10 +39,6 @@ import java.io.IOException;
  */
 public class LayoutController
 {
-    private TrackManager trackManager;
-
-
-
     @FXML
     private BorderPane sceneBase;
 
@@ -69,9 +69,24 @@ public class LayoutController
     @FXML
     private Label lblSoundLevel;
 
-    private BooleanProperty isTogglePlaybackDisabled = new SimpleBooleanProperty(true);
+    @FXML
+    private Label lblCurrentTrack;
+
+    @FXML
+    private Label lblCurrentArtist;
+
+    @FXML
+    private Track currentTrack;
+
+    private TrackManager trackManager;
 
     private PlaybackIcons playbackIcons;
+
+    private Parent tracksNode;
+    private Parent queueNode;
+
+    private TracksController tracksController;
+    private QueueController queueController;
 
     private String currentCenterNode;
 
@@ -86,14 +101,26 @@ public class LayoutController
         playbackIcons = new PlaybackIcons();
     }
 
-    public void initialize()
+    public void initialize() throws IOException
     {
+        FXMLLoader tracksLoader = new FXMLLoader(getClass().getResource("/Views/Tracks/Tracks.fxml"));
+        tracksNode = tracksLoader.load();
+        tracksController = tracksLoader.getController();
+        tracksController.setParentController(this);
+
+        FXMLLoader queueLoader = new FXMLLoader(getClass().getResource("/Views/Queue/Queue.fxml"));
+        queueNode = queueLoader.load();
+        queueController = queueLoader.getController();
+        queueController.configureQueue(QueueType.TRACKS, trackManager.getCurrentTrack());
+
         configure();
         toTrackList(null);
     }
 
     private void configure()
     {
+        this.currentTrack = trackManager.getCurrentTrack();
+
         // Set Playback control icons.
         lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
         lblStepBackward.setGraphic(playbackIcons.getStepBackwardIcon());
@@ -102,28 +129,19 @@ public class LayoutController
         lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
         lblShuffle.setGraphic(playbackIcons.getShuffleIcon());
 
-        trackManager.mediaPlayerProperty().addListener(this::mediaPlayerInitialized);
+        lblCurrentTrack.setText(this.currentTrack.getName());
+        lblCurrentArtist.setText(this.currentTrack.getArtist());
 
-        // Bind the disabled property of the play/pause icon to only be enable when a track is selected.
-        lblTogglePlayback.disableProperty().bind(isTogglePlaybackDisabled);
+        trackManager.mediaPlayerProperty().addListener(this::mediaPlayerInitialized);
+        trackManager.currentTrackProperty().addListener(this::onCurrentTrackChanged);
     }
 
-    private FXMLLoader loadCenterPane(String resourcePath)
+    private void onCurrentTrackChanged(Observable observable)
     {
-        try
-        {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
-            Parent centerNode = loader.load();
-            sceneBase.setCenter(centerNode);
+        this.currentTrack = trackManager.getCurrentTrack();
 
-            return loader;
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
-        }
-
-        return null;
+        lblCurrentTrack.setText(this.currentTrack.getName());
+        lblCurrentArtist.setText(this.currentTrack.getArtist());
     }
 
     private void mediaPlayerInitialized(Observable observable)
@@ -172,11 +190,6 @@ public class LayoutController
         playbackProgress.setValue(elapsedTime);
     }
 
-    private void onTrackSelected()
-    {
-        isTogglePlaybackDisabled.set(false);
-    }
-
     private void onPlaylistCreationAborted()
     {
         toTrackList(null);
@@ -185,6 +198,29 @@ public class LayoutController
     private void onPlaylistCreationFinished()
     {
         toTrackList(null);
+    }
+
+    private  FXMLLoader loadCenterPane(String resourcePath)
+    {
+        try
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+            Parent centerNode = loader.load();
+            sceneBase.setCenter((Parent)centerNode);
+
+            return loader;
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
+    private void loadCenterPane(Parent centerNode)
+    {
+        sceneBase.setCenter(centerNode);
     }
 
     // FXML Functions
@@ -206,43 +242,35 @@ public class LayoutController
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        FXMLLoader loader = loadCenterPane("/Views/Tracks/Tracks.fxml");
+        loadCenterPane(tracksNode);
         currentCenterNode = "tracks";
-
-        if(loader != null)
-        {
-            TracksController tracksController = loader.getController();
-            tracksController.onTrackSelected = new EventHandler(this::onTrackSelected);
-        }
     }
+
+    public void toQueue(QueueType queueType, Track track)
+    {
+        queueController.configureQueue(queueType, track);
+        loadCenterPane(queueNode);
+        currentCenterNode = "queue";
+        lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
+    }
+
 
     @FXML
     public void onPreviousClicked(MouseEvent event)
     {
-        Track queuedPreviousTrack = trackManager.getPrevious();
-
-        if(queuedPreviousTrack != null)
-        {
-            trackManager.toggleTrack(queuedPreviousTrack);
-        }
+        trackManager.previous();
     }
 
     @FXML
     public void onStartClicked(MouseEvent event)
     {
-        Track currentTrack = trackManager.getQueuedTrack();
-        trackManager.toggleTrack(currentTrack);
+        trackManager.toggleTrack(null);
     }
 
     @FXML
     public void onNextClicked(MouseEvent event)
     {
-        Track nextTrack = trackManager.getNext();
-
-        if(nextTrack != null)
-        {
-            trackManager.toggleTrack(nextTrack);
-        }
+        trackManager.next();
     }
 
     @FXML
@@ -251,11 +279,11 @@ public class LayoutController
         if(currentCenterNode.compareToIgnoreCase("tracks") == 0)
         {
             lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
-            FXMLLoader loader = loadCenterPane("/Views/Queue/queue.fxml");
-            currentCenterNode = "queue";
+            toQueue(queueController.getQueueType(), trackManager.getSelectedTrack());
         }
         else if (currentCenterNode.compareToIgnoreCase("queue") == 0)
         {
+            trackManager.setQueuedTracks(trackManager.getTracks());
             lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
             toTrackList(null);
         }

@@ -27,6 +27,7 @@ public class Track
             setArtist(tags.getArtist());
             setAlbum(tags.getAlbum());
             setYear(tags.getYear());
+
         }
     }
 
@@ -121,5 +122,22 @@ public class Track
     public final void setYear(String year)
     {
         this.year.set(year);
+    }
+
+    private StringProperty genre = new SimpleStringProperty();
+
+    public StringProperty genreProperty()
+    {
+        return genre;
+    }
+
+    public final String getGenre()
+    {
+        return genre.get();
+    }
+
+    public final void setGenre(String genre)
+    {
+        this.genre.set(genre);
     }
 }

@@ -15,11 +15,13 @@
             <Insets top="15" right="15" bottom="15" left="15"/>
         </padding>
 
-        <Label text="Currently Playing" style="-fx-font-size: 24px;">
-            <padding>
-                <Insets top="10" bottom="10" />
-            </padding>
-        </Label>
+        <HBox>
+            <Label text="Currently Playing - Tracks" style="-fx-font-size: 24px;">
+                <padding>
+                    <Insets top="10" bottom="10" />
+                </padding>
+            </Label>
+        </HBox>
 
         <HBox spacing="15">
             <ImageView>
@@ -39,7 +41,7 @@
 
     <Separator />
 
-    <Label text="Upcoming Views.Tracks" style="-fx-font-size: 24px;">
+    <Label text="Upcoming Tracks" style="-fx-font-size: 24px;">
         <padding>
             <Insets top="15" right="15" bottom="15" left="15"/>
         </padding>

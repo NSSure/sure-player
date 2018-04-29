@@ -1,5 +1,8 @@
 package Views.Tracks;
 
+import Enums.QueueType;
+import Views.Layout.LayoutController;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
 
 import javafx.collections.ObservableList;
@@ -30,6 +33,8 @@ public class TracksController
 
     private IntegerProperty hoverIndex = new SimpleIntegerProperty(-2);
 
+    private LayoutController parentController;
+
     public EventHandler onTrackSelected;
 
     public TracksController()
@@ -49,17 +54,32 @@ public class TracksController
         trackTable.setItems(tracks);
 
         trackTable.setRowFactory(tableView -> {
-            final TableRow<Track> row = new TableRow<>();
+            final TableRow<Track> row = new TableRow<Track>(){
+                @Override
+                protected void updateItem(Track track, boolean empty){
+                    super.updateItem(track, empty);
+
+                    if(getIndex() == 0){
+                        getStyleClass().add("current-track-text");
+                    }
+
+                    trackManager.currentTrackIndexProperty().addListener((observable) -> {
+                        if(getIndex() == trackManager.getCurrentTrackIndex()){
+                            // https://stackoverflow.com/questions/20350099/programmatically-change-the-tableview-row-appearance
+                            getStyleClass().add("current-track-text");
+                        }
+                        else {
+                            getStyleClass().removeAll("current-track-text");
+                        }
+                    });
+                }
+            };
 
             row.hoverProperty().addListener((observable, wasHover, nowHover) -> {
                 if(nowHover)
                 {
                     hoverIndex.set(row.getIndex());
                 }
-            });
-
-            trackManager.currentTrackIndexProperty().addListener((observable) -> {
-               trackTable.getSelectionModel().select(trackManager.getCurrentTrackIndex());
             });
 
             return row;
@@ -77,16 +97,19 @@ public class TracksController
             MenuItem addToPlaylistItem = new MenuItem("Add to Views.Playlist");
             addToPlaylistItem.setOnAction(this::onAddToPlaylistClicked);
 
-            MenuItem goToArtistItem = new MenuItem("Go to Artist");
+            MenuItem goToArtistItem = new MenuItem("Queue Artist");
             goToArtistItem.setOnAction(this::onGoToArtistClicked);
 
-            MenuItem goToAlbumItem = new MenuItem("Go to Album");
+            MenuItem goToAlbumItem = new MenuItem("Queue Album");
             goToAlbumItem.setOnAction(this::onGoToAlbumClicked);
+
+            MenuItem goToGenreItem = new MenuItem("Queue Genre");
+            goToGenreItem.setOnAction(this::onGoToGenreClicked);
 
             MenuItem removeFromLibraryItem = new MenuItem("Remove from Library");
             removeFromLibraryItem.setOnAction(this::onRemoveFromLibraryClicked);
 
-            trackMenuButton.getItems().addAll(addToPlaylistItem, goToArtistItem, goToAlbumItem, removeFromLibraryItem);
+            trackMenuButton.getItems().addAll(addToPlaylistItem, goToArtistItem, goToAlbumItem, goToGenreItem, removeFromLibraryItem);
             trackMenuButton.setGraphic(actionIcon);
 
             TableCell<Track, Track> cell = new TableCell<Track, Track>() {
@@ -109,7 +132,26 @@ public class TracksController
 
         trackTable.getColumns().add(actionColumn);
 
+        trackManager.selectedTrackProperty().addListener(this::onSelectedTrackChanged);
+
         configure();
+        setSelectedRow(trackManager.getSelectedTrack());
+    }
+
+    private void setSelectedRow(Track track)
+    {
+        int index = trackTable.getItems().indexOf(track);
+        trackTable.getSelectionModel().select(index);
+    }
+
+    public void setParentController(LayoutController parentController)
+    {
+        this.parentController = parentController;
+    }
+
+    private void onSelectedTrackChanged(Observable observable)
+    {
+        setSelectedRow(trackManager.getSelectedTrack());
     }
 
     private void onAddToPlaylistClicked(ActionEvent event)
@@ -119,12 +161,20 @@ public class TracksController
 
     private void onGoToArtistClicked(ActionEvent event)
     {
-        System.out.println("ARTIST");
+        Track trackPendingAction = trackTable.getItems().get(hoverIndex.get());
+        this.parentController.toQueue(QueueType.ARTIST, trackPendingAction);
     }
 
     private void onGoToAlbumClicked(ActionEvent event)
     {
-        System.out.println("ALBUM");
+        Track trackPendingAction = trackTable.getItems().get(hoverIndex.get());
+        this.parentController.toQueue(QueueType.ALBUM, trackPendingAction);
+    }
+
+    private void onGoToGenreClicked(ActionEvent event)
+    {
+        Track trackPendingAction = trackTable.getItems().get(hoverIndex.get());
+        this.parentController.toQueue(QueueType.GENRE, trackPendingAction);
     }
 
     private void onRemoveFromLibraryClicked(ActionEvent event)
@@ -143,18 +193,11 @@ public class TracksController
     {
         if(event.getButton().equals(MouseButton.PRIMARY)){
             TableView.TableViewSelectionModel model = trackTable.getSelectionModel();
-            Track queuedTrack = (Track)model.getSelectedItem();
+            Track selectedTrack = (Track)model.getSelectedItem();
+            trackManager.setSelectedTrack(selectedTrack);
 
-            if(event.getClickCount() == 1){
-                AppGlobal.getTrackManagerInstance().pendTrack(queuedTrack);
-
-                if(onTrackSelected != null)
-                {
-                    onTrackSelected.execute();
-                }
-            }
-            else if(event.getClickCount() == 2){
-                AppGlobal.getTrackManagerInstance().toggleTrack(queuedTrack);
+            if(event.getClickCount() == 2){
+                trackManager.toggleTrack(selectedTrack);
             }
         }
     }

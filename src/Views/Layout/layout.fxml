@@ -79,6 +79,11 @@
                     <Slider fx:id="playbackProgress" HBox.hgrow="ALWAYS" />
                     <Label text="0:00" fx:id="lblTrackDuration" />
                 </HBox>
+
+                <VBox>
+                    <Label fx:id="lblCurrentTrack" style="-fx-font-weight: bold;" />
+                    <Label fx:id="lblCurrentArtist" />
+                </VBox>
             </VBox>
 
             <ToolBar styleClass="footer">

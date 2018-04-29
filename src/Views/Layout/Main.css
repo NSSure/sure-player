@@ -197,3 +197,17 @@
     -fx-background-color: #92CAF4;
     -fx-text-fill: #333333;
 }
+
+.context-menu {
+  -fx-background-color: #333333;
+  -fx-text-fill: #f7f7f7;
+  -fx-font-size: 14px;
+}
+
+.context-menu .menu-item:hover {
+   -fx-background-color: #444444;
+}
+
+.current-track-text > .table-cell {
+    -fx-text-fill: #4DA541;
+}

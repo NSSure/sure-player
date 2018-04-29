@@ -6,8 +6,11 @@ import javafx.fxml.Initializable;
 import Models.Playlist;
 import Utilities.PlaylistUtility;
 import javafx.collections.FXCollections;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -37,6 +40,7 @@ public class PlaylistDirectoryController implements Initializable
                     }
                     else
                     {
+                        setContextMenu(new ContextMenu(new MenuItem("PLAY"), new MenuItem("Go Tracks")));
                         setText(item.getName());
                     }
                 }
