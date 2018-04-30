@@ -16,7 +16,7 @@
         </padding>
 
         <HBox>
-            <Label text="Currently Playing - Tracks" style="-fx-font-size: 24px;">
+            <Label fx:id="lblQueueDescription" style="-fx-font-size: 24px;">
                 <padding>
                     <Insets top="10" bottom="10" />
                 </padding>

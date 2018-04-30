@@ -1,19 +1,19 @@
 package Views.Setup;
 
+import javafx.fxml.FXML;
+import com.mpatric.mp3agic.ID3v2;
+
 import Models.Track;
 import com.google.gson.Gson;
-import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import org.hildan.fxgson.FxGson;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,7 +21,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 /**
- * Created by Nick on 4/1/2018.
+ * Controller for the queue.fxml page.
+ *
+ * @author Nick Gordon
+ * @since 4/1/2018
  */
 public class SetupController
 {
@@ -38,77 +41,128 @@ public class SetupController
     {
         btnLocalDirectory.setOnAction(this::displayLocalDirectoryPrompt);
         btnCompleteSetup.setOnAction(this::completeSetup);
+        btnCompleteSetup.setDisable(true);
     }
 
+    /**
+     * Display the choose a directory prompt.
+     * @param event The action event.
+     */
     private void displayLocalDirectoryPrompt(ActionEvent event)
     {
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
         File selectedDirectory = directoryChooser.showDialog(sceneBase.getScene().getWindow());
 
+        // If the user selected a directory continue.
         if(selectedDirectory != null)
         {
             setLocalStorage(selectedDirectory);
         }
     }
 
+    /**
+     * Reads the files in the selected directory and creates a local json file containing the track information.
+     * @param localDirectory The selected directory for the track information.
+     */
     private void setLocalStorage(File localDirectory)
     {
+        // List the files in the directory.
         File[] localTracks = localDirectory.listFiles();
+
+        // If their are no file display a message to the user.
+        if(localTracks.length == 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+            alert.setTitle("Action Completed");
+            alert.setHeaderText(null);
+            alert.setContentText("Local music directory must have at least one file.");
+            alert.showAndWait();
+
+            return;
+        }
+
         ArrayList<Track> tracks = new ArrayList<>();
 
         if(localTracks != null)
         {
             for(File localFile : localTracks)
             {
-                String path = localFile.toPath().toString();
-                ID3v2 localFileTags = null;
-                long lengthInSeconds = 0;
+                int fileExtensionAccessorIndex = localFile.getName().lastIndexOf('.');
 
-                path = path.replace('\\', '/');
+                // If the file is not a directory or an mp3 file we don't add it the the local tracks.
+                if(!localFile.isDirectory() && localFile.getName().substring(fileExtensionAccessorIndex + 1).compareToIgnoreCase("mp3") == 0)
+                {
+                    // Get the mp3 tag information.
+                    String path = localFile.toPath().toString();
+                    ID3v2 localFileTags = null;
+                    long lengthInSeconds = 0;
 
+                    path = path.replace('\\', '/');
+
+                    try
+                    {
+                        Mp3File mp3 = new Mp3File(path);
+                        lengthInSeconds = mp3.getLengthInSeconds();
+
+                        if(mp3.hasId3v1Tag())
+                        {
+                            localFileTags = mp3.getId3v2Tag();
+                        }
+                    }
+                    catch (IOException | UnsupportedTagException | InvalidDataException ex)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+
+                        alert.setTitle("Failed to Read Local File Tags");
+                        alert.setContentText("Whoops! Something went wrong attempting to read your local files tags. Please try to import your local media again.");
+                        alert.showAndWait();
+                    }
+
+                    tracks.add(new Track(localFile.getName(), path, lengthInSeconds, localFileTags));
+                }
+            }
+
+            // If their were no valid mp3 tracks found in that directory we don't create the LocalTrackSource.json on the local file system.
+            if(tracks.size() > 0)
+            {
                 try
                 {
-                    Mp3File mp3 = new Mp3File(path);
-                    lengthInSeconds = mp3.getLengthInSeconds();
+                    Writer writer = new FileWriter("Storage/LocalTrackSource.json");
 
-                    if(mp3.hasId3v1Tag())
-                    {
-                        localFileTags = mp3.getId3v2Tag();
-                    }
+                    Gson gson = FxGson.coreBuilder().create();
+                    gson.toJson(tracks, writer);
+
+                    writer.close();
+
+                    btnCompleteSetup.setDisable(false);
                 }
-                catch (IOException | UnsupportedTagException | InvalidDataException ex)
+                catch (IOException ex)
                 {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
 
-                    alert.setTitle("Failed to Read Local File Tags");
-                    alert.setContentText("Whoops! Something went wrong attempting to read your local files tags. Please try to import your local media again.");
+                    alert.setTitle("Local Import Failed");
+                    alert.setContentText("Whoops! Something went wrong when attempting to import your local media files. Please try to import your local media again.");
                     alert.showAndWait();
                 }
-
-                tracks.add(new Track(localFile.getName(), path, lengthInSeconds, localFileTags));
             }
-
-            try
+            else
             {
-                Writer writer = new FileWriter("Storage/LocalTrackSource.json");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
-                Gson gson = FxGson.coreBuilder().create();
-                gson.toJson(tracks, writer);
-
-                writer.close();
-            }
-            catch (IOException ex)
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-
-                alert.setTitle("Local Import Failed");
-                alert.setContentText("Whoops! Something went wrong when attempting to import your local media files. Please try to import your local media again.");
+                alert.setTitle("Action Completed");
+                alert.setHeaderText(null);
+                alert.setContentText("No music file found in directory.  Please choose another directory.");
                 alert.showAndWait();
             }
         }
     }
 
+    /**
+     * Hides the setup stage.
+     * @param event The action event.
+     */
     private void completeSetup(ActionEvent event)
     {
         sceneBase.getScene().getWindow().hide();

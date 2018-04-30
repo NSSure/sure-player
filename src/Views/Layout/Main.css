@@ -208,6 +208,10 @@
    -fx-background-color: #444444;
 }
 
+.context-menu .menu-item:focused {
+   -fx-background-color: #444444;
+}
+
 .current-track-text > .table-cell {
     -fx-text-fill: #4DA541;
 }

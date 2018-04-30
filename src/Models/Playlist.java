@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Created on 4/8/2018 by Nick Gordon
+ * Defines the properties and methods for the playlist object.
+ *
+ * @author Nick Gordon
+ * @since 4/8/2018
  */
 public class Playlist
 {

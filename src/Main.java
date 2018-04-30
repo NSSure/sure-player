@@ -1,19 +1,30 @@
-import Utilities.LocalStorage;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.*;
-
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Controller for the queue.fxml page.
+ *
+ * @author Nick Gordon
+ * @since 3/27/2018
+ */
 public class Main extends Application
 {
+    /**
+     * Primary stage construction.
+     *
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        // Hide the primary stage until startup is complete.
         primaryStage.setOpacity(0.0);
 
         checkLocalStorage(primaryStage);
@@ -31,13 +42,21 @@ public class Main extends Application
         primaryStage.setMaximized(true);
         primaryStage.show();
 
+        // Startup is complete show the primary stage.
         primaryStage.setOpacity(1.0);
     }
 
+    /**
+     * Checks if the user already selected a directory to read their tracks from.  If not we show them the
+     * setup stage.
+     * @param primaryStage
+     */
     private void checkLocalStorage(Stage primaryStage)
     {
         File trackSource = new File("Storage/LocalTrackSource.json");
 
+        // If setup is not complete show the setup stage and let them select their local directory that contains
+        // their music tracks.
         if(!trackSource.exists())
         {
             try
@@ -47,6 +66,7 @@ public class Main extends Application
                 Parent setupRoot = FXMLLoader.load(getClass().getResource("/Views/Setup/Setup.fxml"));
                 dialog.setScene(new Scene(setupRoot));
 
+                // Show the setup stage as a modal of the primary stage.
                 dialog.initOwner(primaryStage);
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.showAndWait();
@@ -62,6 +82,10 @@ public class Main extends Application
         }
     }
 
+    /**
+     * Starting point of the application.
+     * @param args Command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

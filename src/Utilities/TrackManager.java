@@ -17,12 +17,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
+/**
+ * Manage functionality for playing, pausing, skipping, and queueing tracks.
+ *
+ * @author Nick Gordon
+ * @since 3/27/2018
+ */
 public class TrackManager
 {
+    // A full list of all the tracks in the LocalTrackSource.json file.
     private LinkedList<Track> tracks;
+
+    // Used when the user enables shuffle play.  Contains the original unshuffle version of the queued tracks.
     private LinkedList<Track> unshuffledSet;
+
+    // Tells if shuffle mode has been enabled by the user.
     private boolean isShuffle = false;
 
+    /**
+     * Called during the application startup.  Handles reading the tracks from the local storage
+     * and storing them locally in this class.
+     */
     public void initialize()
     {
         try
@@ -33,6 +48,7 @@ public class TrackManager
             // FxGson sample code source: https://stackoverflow.com/questions/32794500/serialize-javafx-model-with-gson
             Gson gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
+            // Read all the tracks into an array.
             Track[] trackSource = gson.fromJson(bufferedReader, Track[].class);
 
             for(Track track : trackSource)
@@ -40,6 +56,7 @@ public class TrackManager
                 System.out.println("Track: " + track.getName());
             }
 
+            // Set the queued tracks, selected track, current track, and the full track listing.
             tracks = new LinkedList<>(Arrays.asList(trackSource));
             setQueuedTracks(new LinkedList<>(tracks));
 
@@ -52,22 +69,30 @@ public class TrackManager
         }
     }
 
+    /**
+     * Starts and stops the playback of a track.
+     * @param selectedTrack The track to toggle playback for.
+     */
     public void toggleTrack(Track selectedTrack)
     {
         try
         {
+            // Check if a media play is already created.
             if(getMediaPlayer() == null)
             {
+                // If a media player has been created and we have a new selected track we need to configure the media
+                // player for the selected track.
                 if(selectedTrack != null)
                 {
                     configureMedia(selectedTrack);
                 }
-                else
-                {
-                    configureMedia(getCurrentTrack());
-                }
+//                else
+//                {
+//                    configureMedia(getCurrentTrack());
+//                }
             }
 
+            // If we playing the track we need to stop. Otherwise we can start playback.
             if(getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING)
             {
                 getMediaPlayer().pause();
@@ -87,10 +112,16 @@ public class TrackManager
         }
     }
 
+    /**
+     * Handles the creation of the MediaPlayer and sets the current track.
+     * @param track The track to configure the MediaPlayer for.
+     */
     public void configureMedia(Track track)
     {
+        // Create a media object for the given track.
         Media media = new Media(Paths.get(track.getPath()).toUri().toString());
 
+        // If the MediaPlayer is already configured for another track we might need to stop playback of that track.
         if(mediaPlayer.get() != null)
         {
             if(mediaPlayer.get().getStatus() == MediaPlayer.Status.PLAYING)
@@ -99,56 +130,60 @@ public class TrackManager
             }
         }
 
+        // Configure the MediaPlayer for the new pieces of media.
         mediaPlayer.set(new MediaPlayer(media));
 
         setCurrentTrack(track);
         setCurrentTrackIndex(tracks.indexOf(getCurrentTrack()));
     }
 
+    /**
+     * Changes the current playback track to the previous track in the queue.  Will loop back to the end of the queued tracks.
+     */
     public void previous()
     {
-        if((getCurrentTrackIndex() - 1) < 0)
-        {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        // Get the index of the last queued track.
+        int index = getQueuedTracks().size() - 1;
 
-            alert.setTitle("Invalid Action");
-            alert.setHeaderText(null);
-            alert.setContentText("You are at the beginner of the track queue.  You are unable to go to a previous track");
-            alert.showAndWait();
-        }
-        else
+        // If we haven't reached the beginning of the queued track then we can get the new index otherwise we are setting the new current track
+        // as the last track in the queue.
+        if((getQueuedTracks().indexOf(getCurrentTrack()) - 1) >= 0)
         {
-            configureMedia(getQueuedTracks().get(getCurrentTrackIndex() - 1));
-            toggleTrack(null);
+            index = getQueuedTracks().indexOf(getCurrentTrack()) - 1;
         }
+
+        configureMedia(getQueuedTracks().get(index));
+        toggleTrack(null);
     }
 
+    /**
+     * Changes the current playback track to the next track in the queue.  Will loop back to the end of the queued tracks.
+     */
     public void next()
     {
-        if((getCurrentTrackIndex() + 1) > (getQueuedTracks().size() - 1))
-        {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        // Set the index of the first queued track (always zero obviously).
+        int index = 0;
 
-            alert.setTitle("Invalid Action");
-            alert.setHeaderText(null);
-            alert.setContentText("Reached the end of the track queue");
-            alert.showAndWait();
-        }
-        else
+        // If we haven't reached the end of the queued track then we can get get the new index otherwise we are setting the new current track
+        // as the first track is the queue.
+        if((getQueuedTracks().indexOf(getCurrentTrack()) + 1) <= (getQueuedTracks().size() - 1))
         {
-            configureMedia(getQueuedTracks().get(getCurrentTrackIndex() + 1));
-            toggleTrack(null);
+            index = getQueuedTracks().indexOf(getCurrentTrack()) + 1;
         }
+
+        configureMedia(getQueuedTracks().get(index));
+        toggleTrack(null);
     }
 
-    public boolean isShuffle() {
-        return isShuffle;
-    }
-
+    /**
+     * Enable or disable the track managers shuffle mode.
+     * @param isShuffle
+     */
     public void setShuffle(boolean isShuffle)
     {
         this.isShuffle = isShuffle;
 
+        // If the user is enabling shuffle mode we need to shuffle the queued tracks linked list.
         if(this.isShuffle)
         {
             LinkedList<Track> shuffledList = new LinkedList<>(getQueuedTracks());
@@ -162,6 +197,12 @@ public class TrackManager
             setQueuedTracks(unshuffledSet);
         }
     }
+
+    public boolean isShuffle() {
+        return isShuffle;
+    }
+
+    // Bindable properties (Basically getters and setter).
 
     public LinkedList<Track> getTracks() {
         return tracks;
@@ -230,7 +271,6 @@ public class TrackManager
         selectedTrack.set(track);
     }
 
-
     private ObjectProperty<LinkedList<Track>> queuedTracks = new SimpleObjectProperty<>();
 
     public ObjectProperty<LinkedList<Track>> queuedTracksProperty()
@@ -245,6 +285,4 @@ public class TrackManager
     public LinkedList<Track> getQueuedTracks() {
         return queuedTracks.get();
     }
-
-
 }

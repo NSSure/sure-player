@@ -4,6 +4,7 @@ import EventSystem.EventHandler;
 import Models.Playlist;
 
 import Utilities.PlaylistUtility;
+import Views.Layout.LayoutController;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.Alert;
@@ -35,6 +36,8 @@ public class PlaylistController
     private TextField txtDescription;
 
     private Playlist playlist;
+
+    private LayoutController parentController;
 
     public EventHandler onPlaylistCreationAborted;
     public EventHandler onPlaylistCreationFinished;
@@ -78,10 +81,7 @@ public class PlaylistController
 
             playlistUtil.add(playlist);
 
-            if(onPlaylistCreationFinished != null && onPlaylistCreationFinished.canExecute())
-            {
-                onPlaylistCreationFinished.execute();
-            }
+            this.parentController.onPlaylistCreationFinished(playlist);
         }
         else
         {
@@ -97,9 +97,11 @@ public class PlaylistController
     @FXML
     private void onCancelClicked(MouseEvent event)
     {
-        if(onPlaylistCreationAborted != null && onPlaylistCreationAborted.canExecute())
-        {
-            onPlaylistCreationAborted.execute();
-        }
+        this.parentController.onPlaylistCreationAborted();
+    }
+
+    public void setParentController(LayoutController parentController)
+    {
+        this.parentController = parentController;
     }
 }

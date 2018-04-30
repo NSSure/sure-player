@@ -6,7 +6,10 @@ import jiconfont.icons.FontAwesome;
 import jiconfont.javafx.IconNode;
 
 /**
- * Create on 4/12/2018 by Nick Gordon
+ * Wrapper object that contains all of the page icons.
+ *
+ * @author Nick Gordon
+ * @since 4/12/2018
  */
 public class PlaybackIcons
 {
@@ -33,6 +36,8 @@ public class PlaybackIcons
 
     public PlaybackIcons()
     {
+        // Set the default values for all of the page icons.
+
         defaultVolumeIcon = new ExtendedIconNode(FontAwesome.VOLUME_DOWN);
         defaultVolumeIcon.setIconSize(25);
         defaultVolumeIcon.setFill(Color.valueOf("#A7A7A7"));

@@ -9,7 +9,10 @@ import javafx.beans.property.StringProperty;
 import java.util.UUID;
 
 /**
- * Created on 3/27/2018 by Nick Gordon
+ * Defines the properties and methods for the playlist object.
+ *
+ * @author Nick Gordon
+ * @since 3/27/2018
  */
 public class Track
 {
@@ -39,6 +42,23 @@ public class Track
         return this.ID;
     }
 
+    /**
+     * Creates a display string for the tracks duration.
+     *
+     * @return A string with the formatted duration string.
+     */
+    public String getDuration()
+    {
+        double totalDurationInSeconds = getlengthInSeconds();
+
+        int totalSeconds = (int)totalDurationInSeconds;
+
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
     public String getPath()
     {
         return path;
@@ -47,19 +67,6 @@ public class Track
     public long getlengthInSeconds()
     {
         return lengthInSeconds;
-    }
-
-    public String getDuration()
-    {
-        double totalDurationInSeconds = getlengthInSeconds();
-
-        int totalSeconds = (int)totalDurationInSeconds;
-
-        //int hours = totalSecs / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        int seconds = totalSeconds % 60;
-
-        return String.format("%02d:%02d", minutes, seconds);
     }
 
     // Bindable properties.
