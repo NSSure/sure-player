@@ -5,5 +5,5 @@ package Enums;
  */
 public enum QueueType
 {
-    TRACKS, ARTIST, ALBUM, GENRE
+    TRACKS, ARTIST, ALBUM, GENRE, PLAYLIST
 }

@@ -99,7 +99,7 @@ public class LocalStorage<TEntity>
         {
             BufferedReader br = new BufferedReader(new FileReader(this.getPath()));
 
-            Gson gson = new Gson();
+            Gson gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
             Type entityType = new TypeToken<TEntity>() {}.getType();
             return gson.fromJson(br, entityType);
         }
@@ -121,7 +121,7 @@ public class LocalStorage<TEntity>
         {
             BufferedReader reader = new BufferedReader(new FileReader(this.getPath()));
 
-            Gson gson = new Gson();
+            Gson gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
             Type genericArrayListType = new GenericArrayListType(genericType);
             ArrayList<TEntity> data = gson.fromJson(reader, genericArrayListType);

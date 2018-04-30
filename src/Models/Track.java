@@ -6,11 +6,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.UUID;
+
 /**
- * Created by Nick on 3/27/2018.
+ * Created on 3/27/2018 by Nick Gordon
  */
 public class Track
 {
+    private UUID ID;
     private String path;
     private long lengthInSeconds;
     private String duration;
@@ -19,6 +22,7 @@ public class Track
     {
         setName(name);
 
+        this.ID = UUID.randomUUID();
         this.path = path;
         this.lengthInSeconds = lengthInSeconds;
 
@@ -27,8 +31,12 @@ public class Track
             setArtist(tags.getArtist());
             setAlbum(tags.getAlbum());
             setYear(tags.getYear());
-
         }
+    }
+
+    public UUID getID()
+    {
+        return this.ID;
     }
 
     public String getPath()

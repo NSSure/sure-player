@@ -10,7 +10,7 @@ public class PlaylistUtility extends LocalStorage<Playlist>
 {
     public PlaylistUtility()
     {
-        super("Storage/Playlist.json", Playlist.class);
+        super("Storage/Playlists.json", Playlist.class);
     }
 
     public void add(Playlist playlist)
@@ -24,5 +24,19 @@ public class PlaylistUtility extends LocalStorage<Playlist>
 
         playlists.add(playlist);
         super.writeMany(playlists);
+    }
+
+    public void update(Playlist playlist)
+    {
+        ArrayList<Playlist> playlists = super.readMany();
+
+        for(int i = 0; i < playlists.size(); i++)
+        {
+            if(playlists.get(i).getID().compareTo(playlist.getID()) == 0)
+            {
+                playlists.set(i, playlist);
+                super.writeMany(playlists);
+            }
+        }
     }
 }

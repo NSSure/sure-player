@@ -1,5 +1,6 @@
 package Views.Playlist.Directory;
 
+import Views.Layout.LayoutController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -20,6 +21,8 @@ public class PlaylistDirectoryController implements Initializable
     @FXML
     private ListView<Playlist> playlistDirectory;
 
+    private LayoutController parentController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         PlaylistUtility playlistUtil = new PlaylistUtility();
@@ -31,20 +34,35 @@ public class PlaylistDirectoryController implements Initializable
 
             playlistDirectory.setCellFactory(param -> new ListCell<Playlist>() {
                 @Override
-                protected void updateItem(Playlist item, boolean empty) {
-                    super.updateItem(item, empty);
+                protected void updateItem(Playlist playlist, boolean empty) {
+                    super.updateItem(playlist, empty);
 
-                    if (empty || item == null || item.getName() == null)
+                    if (empty || playlist == null || playlist.getName() == null)
                     {
                         setText(null);
                     }
                     else
                     {
-                        setContextMenu(new ContextMenu(new MenuItem("PLAY"), new MenuItem("Go Tracks")));
-                        setText(item.getName());
+                        ContextMenu playlistOptions = new ContextMenu();
+
+                        MenuItem playItem = new MenuItem("Play");
+                        playItem.setOnAction((event) -> { });
+
+                        MenuItem manageTracksItem = new MenuItem("Manage Tracks");
+                        manageTracksItem.setOnAction((event) -> { parentController.toPlaylistTracks(playlist); });
+
+                        playlistOptions.getItems().addAll(playItem, manageTracksItem);
+
+                        setContextMenu(playlistOptions);
+                        setText(playlist.getName());
                     }
                 }
             });
         }
+    }
+
+    public void setParentController(LayoutController parentController)
+    {
+        this.parentController = parentController;
     }
 }

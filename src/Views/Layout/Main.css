@@ -194,8 +194,8 @@
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: #92CAF4;
-    -fx-text-fill: #333333;
+    -fx-background-color: #333333;
+    -fx-text-fill: #f7f7f7;
 }
 
 .context-menu {

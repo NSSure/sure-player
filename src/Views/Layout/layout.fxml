@@ -15,7 +15,7 @@
 
 <BorderPane fx:controller="Views.Layout.LayoutController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <top>
-        <ToolBar styleClass="header">
+        <ToolBar styleClass="header" style="-fx-background-color: #121212;">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
@@ -39,7 +39,7 @@
 
             <Separator />
 
-            <fx:include source="/Views/Playlist/Directory/playlist-directory.fxml" VBox.vgrow="ALWAYS" />
+            <fx:include fx:id="playlistDirectory" source="/Views/Playlist/Directory/playlist-directory.fxml" VBox.vgrow="ALWAYS" />
         </VBox>
     </left>
     <center>
@@ -106,7 +106,7 @@
                         </padding>
 
                         <tooltip>
-                            <Tooltip text="Views.Queue/Track" />
+                            <Tooltip text="Queue/Track" />
                         </tooltip>
                     </Label>
 

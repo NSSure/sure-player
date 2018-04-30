@@ -20,6 +20,6 @@
     </Separator>
 
     <HBox>
-        <Button fx:id="btnCompleteSetup" text="Complete Views.Setup" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="btnCompleteSetup" text="Complete Setup" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
     </HBox>
 </VBox>

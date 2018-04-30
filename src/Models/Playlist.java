@@ -1,21 +1,31 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
- * Created by Nick on 4/8/2018.
+ * Created on 4/8/2018 by Nick Gordon
  */
 public class Playlist
 {
+    public UUID ID;
     public String name;
     private String description;
-    private String ImagePath;
-    private ArrayList<String> TrackPaths;
+    private String imagePath;
+    private ArrayList<Track> tracks;
 
     public Playlist(String name, String description)
     {
+        this.ID = UUID.randomUUID();
         this.name = name;
         this.description = description;
+        this.imagePath = "";
+        this.tracks = new ArrayList<>();
+    }
+
+    public UUID getID()
+    {
+        return this.ID;
     }
 
     public String getName() {
@@ -35,22 +45,22 @@ public class Playlist
     }
 
     public String getImagePath() {
-        return ImagePath;
+        return imagePath;
     }
 
     public void setImagePath(String imagePath) {
-        ImagePath = imagePath;
+        imagePath = imagePath;
     }
 
-    public ArrayList<String> getTrackPaths() {
-        return TrackPaths;
+    public ArrayList<Track> getTracks() {
+        return tracks;
     }
 
-    public void setTrackPaths(ArrayList<String> trackPaths) {
-        TrackPaths = trackPaths;
+    public void setTracks(ArrayList<Track> tracks) {
+        this.tracks = tracks;
     }
 
-    public void addTrack(String path) {
-        TrackPaths.add(path);
+    public void addTrack(Track track) {
+        this.tracks.add(track);
     }
 }

@@ -1,5 +1,6 @@
 package Views.Queue;
 
+import Models.Playlist;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -47,7 +48,14 @@ public class QueueController
         trackManager = AppGlobal.getTrackManagerInstance();
     }
 
-    public void configureQueue(QueueType queueType, Track sourceQueuedTracked)
+    public void startQueue(QueueType queueType, Playlist sourceQueuedPlaylist)
+    {
+        this.queueType = queueType;
+        trackManager.setQueuedTracks(new LinkedList<>(sourceQueuedPlaylist.getTracks()));
+        configureQueue();
+    }
+
+    public void startQueue(QueueType queueType, Track sourceQueuedTracked)
     {
         this.queueType = queueType;
 
@@ -63,12 +71,17 @@ public class QueueController
                 trackManager.setQueuedTracks(trackManager.getTracks().stream().filter(a -> a.getArtist().compareToIgnoreCase(sourceQueuedTracked.getArtist()) == 0).collect(Collectors.toCollection(LinkedList::new)));
                 break;
             case GENRE:
-                trackManager.setQueuedTracks(trackManager.getTracks().stream().filter(a -> a.getGenre().compareToIgnoreCase(sourceQueuedTracked.getArtist()) == 0).collect(Collectors.toCollection(LinkedList::new)));
+                trackManager.setQueuedTracks(trackManager.getTracks().stream().filter(a -> a.getGenre().compareToIgnoreCase(sourceQueuedTracked.getGenre()) == 0).collect(Collectors.toCollection(LinkedList::new)));
                 break;
             default:
                 break;
         }
 
+        configureQueue();
+    }
+
+    private void configureQueue()
+    {
         queuedTracksTable.setItems(FXCollections.observableArrayList(trackManager.getQueuedTracks()));
 
         trackManager.currentTrackProperty().addListener(this::onCurrentTrackChanged);

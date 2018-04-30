@@ -1,39 +1,33 @@
 package Views.Layout;
 
+import javafx.fxml.FXML;
+
 import Enums.QueueType;
+import javafx.beans.Observable;
+import jiconfont.icons.FontAwesome;
+
 import Icons.ExtendedIconNode;
 import Icons.PlaybackIcons;
 import Models.Playlist;
 import Views.Playlist.Directory.PlaylistDirectoryController;
 import Views.Playlist.PlaylistController;
+import Views.Playlist.Tracks.PlaylistTracksController;
 import Views.Queue.QueueController;
-import javafx.beans.Observable;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-
 import Views.Tracks.TracksController;
 import EventSystem.EventHandler;
 import Utilities.AppGlobal;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-
 import Models.Track;
 import Utilities.TrackManager;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-
-import javafx.scene.layout.VBox;
-import jiconfont.icons.FontAwesome;
 import jiconfont.javafx.IconFontFX;
-
 import java.io.IOException;
+
 /**
  * Created on 4/8/2018 by Nick Gordon
  */
@@ -88,7 +82,11 @@ public class LayoutController
     private TracksController tracksController;
     private QueueController queueController;
 
+    @FXML
+    private PlaylistDirectoryController playlistDirectoryController;
+
     private String currentCenterNode;
+    private String previousCenterNode;
 
     public LayoutController()
     {
@@ -111,7 +109,9 @@ public class LayoutController
         FXMLLoader queueLoader = new FXMLLoader(getClass().getResource("/Views/Queue/Queue.fxml"));
         queueNode = queueLoader.load();
         queueController = queueLoader.getController();
-        queueController.configureQueue(QueueType.TRACKS, trackManager.getCurrentTrack());
+        queueController.startQueue(QueueType.TRACKS, trackManager.getCurrentTrack());
+
+        playlistDirectoryController.setParentController(this);
 
         configure();
         toTrackList(null);
@@ -200,36 +200,90 @@ public class LayoutController
         toTrackList(null);
     }
 
-    private  FXMLLoader loadCenterPane(String resourcePath)
+    private  FXMLLoader loadCenterPane(String resourcePath, String targetCenterNode)
     {
-        try
+        if(currentCenterNode == null || currentCenterNode.compareToIgnoreCase(targetCenterNode) != 0)
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
-            Parent centerNode = loader.load();
-            sceneBase.setCenter((Parent)centerNode);
+            try
+            {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
+                Parent centerNode = loader.load();
+                sceneBase.setCenter((Parent)centerNode);
 
-            return loader;
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
+                previousCenterNode = currentCenterNode;
+                currentCenterNode = targetCenterNode;
+
+                return loader;
+            }
+            catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
         }
 
         return null;
     }
 
-    private void loadCenterPane(Parent centerNode)
+    private void loadCenterPane(Parent centerNode, String targetCenterNode)
     {
-        sceneBase.setCenter(centerNode);
+        if(currentCenterNode == null ||  currentCenterNode.compareToIgnoreCase(targetCenterNode) != 0)
+        {
+            sceneBase.setCenter(centerNode);
+            previousCenterNode = currentCenterNode;
+            currentCenterNode = targetCenterNode;
+        }
     }
 
     // FXML Functions
 
+    public void toPreviousCenterNode()
+    {
+        switch (previousCenterNode)
+        {
+            case "playlist":
+                toPlaylist(null);
+                break;
+            case "tracks":
+                toTrackList(null);
+                break;
+            case "queue":
+                toQueue(queueController.getQueueType(), trackManager.getCurrentTrack());
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void toPlaylistTracks(Playlist playlist)
+    {
+        FXMLLoader loader = loadCenterPane("/Views/Playlist/Tracks/playlist-tracks.fxml", "playlist-tracks");
+
+        if(loader != null)
+        {
+            PlaylistTracksController playlistTracksController = loader.getController();
+            playlistTracksController.setParentController(this);
+            playlistTracksController.setPlaylist(playlist);
+        }
+    }
+
+    public void toQueue(QueueType queueType, Playlist playlist)
+    {
+        queueController.startQueue(queueType, playlist);
+        loadCenterPane(queueNode, "queue");
+        lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+    }
+
+    public void toQueue(QueueType queueType, Track track)
+    {
+        queueController.startQueue(queueType, track);
+        loadCenterPane(queueNode, "queue");
+        lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+    }
+
     @FXML
     public void toPlaylist(ActionEvent event)
     {
-        FXMLLoader loader = loadCenterPane("/Views/Playlist/Playlist.fxml");
-        currentCenterNode = "playlist";
+        FXMLLoader loader = loadCenterPane("/Views/Playlist/Playlist.fxml", "playlist");
 
         if(loader != null)
         {
@@ -242,18 +296,8 @@ public class LayoutController
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        loadCenterPane(tracksNode);
-        currentCenterNode = "tracks";
+        loadCenterPane(tracksNode, "tracks");
     }
-
-    public void toQueue(QueueType queueType, Track track)
-    {
-        queueController.configureQueue(queueType, track);
-        loadCenterPane(queueNode);
-        currentCenterNode = "queue";
-        lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
-    }
-
 
     @FXML
     public void onPreviousClicked(MouseEvent event)
@@ -286,6 +330,20 @@ public class LayoutController
             trackManager.setQueuedTracks(trackManager.getTracks());
             lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
             toTrackList(null);
+        }
+        else if (currentCenterNode.compareToIgnoreCase("playlist-tracks") == 0)
+        {
+            if(lblTrackView.getGraphic() == playbackIcons.getTrackViewIcon())
+            {
+                lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+                toQueue(queueController.getQueueType(), trackManager.getSelectedTrack());
+            }
+            else
+            {
+                trackManager.setQueuedTracks(trackManager.getTracks());
+                lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
+                toTrackList(null);
+            }
         }
     }
 
