@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="Views.Layout.SystemMenu.SystemMenuController">
+    <MenuBar styleClass="header" HBox.hgrow="ALWAYS" fx:id="menuBar">
+        <menus>
+            <Menu text="File">
+                <items>
+                    <MenuItem text="New"/>
+                    <MenuItem text="Open"/>
+                    <MenuItem text="Save"/>
+                    <MenuItem text="Save As"/>
+                    <SeparatorMenuItem  />
+                    <MenuItem text="Exit"/>
+                </items>
+            </Menu>
+            <Menu text="Playlist">
+                <items>
+                    <MenuItem text="Create new playlist" onAction="#toPlaylist"></MenuItem>
+                </items>
+            </Menu>
+            <Menu text="Edit">
+                <items>
+                    <MenuItem text="Copy"/>
+                    <MenuItem text="Cut"/>
+                    <MenuItem text="Paste"/>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+    <MenuBar styleClass="header">
+        <menus>
+            <Menu fx:id="minimizeMenu"></Menu>
+            <Menu fx:id="maximizeMenu"></Menu>
+            <Menu fx:id="exitMenu"></Menu>
+        </menus>
+    </MenuBar>
+</HBox>

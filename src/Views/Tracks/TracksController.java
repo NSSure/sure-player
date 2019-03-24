@@ -9,7 +9,7 @@ import javafx.scene.input.MouseButton;
 import jiconfont.icons.FontAwesome;
 
 import Views.Layout.LayoutController;
-import EventSystem.EventHandler;
+import EventSystem.EventBus;
 import Utilities.AppGlobal;
 import Utilities.TrackManager;
 import javafx.beans.binding.Bindings;
@@ -41,7 +41,7 @@ public class TracksController
 
     private LayoutController parentController;
 
-    public EventHandler onTrackSelected;
+    public EventBus onTrackSelected;
 
     public TracksController()
     {

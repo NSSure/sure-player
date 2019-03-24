@@ -1,9 +1,14 @@
 package Views.Layout;
 
+import EventSystem.EventBus;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 import Enums.QueueType;
 import javafx.beans.Observable;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import jiconfont.icons.FontAwesome;
 
 import Icons.ExtendedIconNode;
@@ -84,16 +89,16 @@ public class LayoutController
     private TracksController tracksController;
     private QueueController queueController;
 
-    @FXML
-    private PlaylistDirectoryController playlistDirectoryController;
-
     private String currentCenterNode;
     private String previousCenterNode;
+
+    private double xOffset;
+    private double yOffset;
 
     public LayoutController()
     {
         // Creates the singleton for the TrackManager.
-        AppGlobal.init();
+        AppGlobal.init(this);
         trackManager = AppGlobal.getTrackManagerInstance();
 
         // Register the font awesome icons.
@@ -119,8 +124,6 @@ public class LayoutController
         queueNode = queueLoader.load();
         queueController = queueLoader.getController();
         queueController.startQueue(QueueType.TRACKS, trackManager.getCurrentTrack());
-
-        playlistDirectoryController.setParentController(this);
 
         // Set the UI bindings and text.
         configure();
@@ -243,10 +246,9 @@ public class LayoutController
      * A playlist was created so we need to tell the sidebar playlist directory to add the new playlist to the UI.
      * @param playlist
      */
-    public void onPlaylistCreationFinished(Playlist playlist)
+    public void onPlaylistCreationFinished()
     {
         toPreviousCenterNode();
-        playlistDirectoryController.addPlaylistToDirectory(playlist);
     }
 
     /**
@@ -480,5 +482,12 @@ public class LayoutController
         {
             lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
         }
+    }
+
+    @FXML
+    public void exitApplication(ActionEvent event)
+    {
+        Platform.exit();
+        System.exit(0);
     }
 }

@@ -1,3 +1,4 @@
+import Utilities.AppGlobal;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,8 +14,18 @@ import java.io.IOException;
  * @author Nick Gordon
  * @since 3/27/2018
  */
-public class Main extends Application
+public class Startup extends Application
 {
+    private static Stage pStage;
+
+    public static Stage getPrimaryStage() {
+        return pStage;
+    }
+
+    private void setPrimaryStage(Stage pStage) {
+        Startup.pStage = pStage;
+    }
+
     /**
      * Primary stage construction.
      *
@@ -34,16 +45,20 @@ public class Main extends Application
         Scene scene = new Scene(root, 1280, 720);
         scene.getStylesheets().add("/Views/Layout/main.css");
 
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
 
-        primaryStage.setMaximized(true);
+        primaryStage.setMaximized(false);
         primaryStage.show();
 
         // Startup is complete show the primary stage.
         primaryStage.setOpacity(1.0);
+
+        AppGlobal.setCurrentStage(primaryStage);
     }
 
     /**

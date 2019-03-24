@@ -1,5 +1,9 @@
 package Utilities;
 
+import Views.Layout.LayoutController;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+
 /**
  * Defines global properties, methods, and functionality for the app.
  *
@@ -13,15 +17,18 @@ public class AppGlobal
     /**
      * Initializes any necessary classes on application startup.
      */
-    public static void init()
+    public static void init(LayoutController controller)
     {
         // If we haven't started the init process we can begin.
         if(!initStarted)
         {
             initStarted = true;
             getTrackManagerInstance().initialize();
+            setLayoutController(controller);
         }
     }
+
+    // Application singletons.
 
     private static TrackManager trackManager;
 
@@ -37,5 +44,55 @@ public class AppGlobal
         }
 
         return trackManager;
+    }
+
+    // Application variables
+
+    private static Stage currentStage;
+
+    public static Stage getCurrentStage() {
+        return currentStage;
+    }
+
+    public static void setCurrentStage(Stage stage) {
+        currentStage = stage;
+    }
+
+    private static LayoutController layoutController;
+
+    public static LayoutController getLayoutController() {
+        return layoutController;
+    }
+
+    public static void setLayoutController(LayoutController controller) {
+        layoutController = controller;
+    }
+
+    private static double stageX;
+
+    public static double getStageX() {
+        return stageX;
+    }
+
+    public static void setStageX(double x) {
+        stageX = x;
+    }
+
+    private static double stageY;
+
+    public static double getStageY() {
+        return stageY;
+    }
+
+    public static void setStageY(double y) {
+        stageY = y;
+    }
+
+    // Application functions
+
+    public static void shutdownApplication()
+    {
+        Platform.exit();
+        System.exit(0);
     }
 }

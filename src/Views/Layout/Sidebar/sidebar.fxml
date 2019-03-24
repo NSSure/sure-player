@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Separator?>
+
+<?import javafx.scene.control.ListView?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="Views.Layout.Sidebar.SidebarController" styleClass="side-bar" maxWidth="200">
+    <Label text="Your Library" style="-fx-font-size: 14px; -fx-font-weight: bold;">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    </Label>
+
+    <ListView fx:id="yourLibraryListView" />
+
+    <Separator />
+
+    <Label text="Playlists" style="-fx-font-size: 14px; -fx-font-weight: bold;">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+    </Label>
+
+    <fx:include fx:id="playlistDirectory" source="/Views/Playlist/Directory/playlist-directory.fxml" VBox.vgrow="ALWAYS" />
+</VBox>

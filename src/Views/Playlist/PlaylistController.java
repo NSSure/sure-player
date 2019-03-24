@@ -1,8 +1,9 @@
 package Views.Playlist;
 
-import EventSystem.EventHandler;
+import EventSystem.EventBus;
 import Models.Playlist;
 
+import Utilities.AppGlobal;
 import Utilities.PlaylistUtility;
 import Views.Layout.LayoutController;
 import javafx.fxml.FXML;
@@ -19,7 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import java.io.File;
 import javafx.stage.*;
-import Utilities.LocalStorage;
 
 public class PlaylistController
 {
@@ -39,8 +39,8 @@ public class PlaylistController
 
     private LayoutController parentController;
 
-    public EventHandler onPlaylistCreationAborted;
-    public EventHandler onPlaylistCreationFinished;
+    public EventBus onPlaylistCreationAborted;
+    public EventBus onPlaylistCreationFinished;
 
     private boolean validateRequiredFields()
     {
@@ -81,7 +81,8 @@ public class PlaylistController
 
             playlistUtil.add(playlist);
 
-            this.parentController.onPlaylistCreationFinished(playlist);
+            EventBus.broadcast("playlist-added", playlist);
+            AppGlobal.getLayoutController().onPlaylistCreationFinished();
         }
         else
         {
@@ -97,7 +98,7 @@ public class PlaylistController
     @FXML
     private void onCancelClicked(MouseEvent event)
     {
-        this.parentController.onPlaylistCreationAborted();
+        AppGlobal.getLayoutController().onPlaylistCreationAborted();
     }
 
     public void setParentController(LayoutController parentController)

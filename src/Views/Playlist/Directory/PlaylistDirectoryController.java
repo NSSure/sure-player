@@ -1,11 +1,14 @@
 package Views.Playlist.Directory;
 
+import EventSystem.EventBus;
+import EventSystem.EventCallable;
+import Utilities.AppGlobal;
+import Views.Playlist.PlaylistController;
 import javafx.fxml.FXML;
 
 import Enums.QueueType;
 import javafx.fxml.Initializable;
 
-import Views.Layout.LayoutController;
 import Models.Playlist;
 import Utilities.PlaylistUtility;
 import javafx.collections.FXCollections;
@@ -13,6 +16,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -23,12 +27,23 @@ import java.util.ResourceBundle;
  * @author Nick Gordon
  * @since 4/8/2018
  */
+
 public class PlaylistDirectoryController implements Initializable
 {
+    class PlaylistActionAdded extends EventCallable<Playlist> {
+        @Override
+        public Void call() {
+            PlaylistDirectoryController.this.addPlaylistToDirectory(super.getData());
+            return null;
+        }
+    }
+
     @FXML
     private ListView<Playlist> playlistDirectory;
 
-    private LayoutController parentController;
+    public PlaylistDirectoryController() {
+        EventBus.subscribe(this, "playlist-added", new PlaylistActionAdded());
+    }
 
     /**
      * Loads the playlists stored on the local file system.
@@ -68,13 +83,13 @@ public class PlaylistDirectoryController implements Initializable
                         MenuItem playItem = new MenuItem("Play");
 
                         playItem.setOnAction((event) -> {
-                            parentController.toQueue(QueueType.PLAYLIST, playlist);
+                            AppGlobal.getLayoutController().toQueue(QueueType.PLAYLIST, playlist);
                         });
 
                         MenuItem manageTracksItem = new MenuItem("Manage Tracks");
 
                         manageTracksItem.setOnAction((event) -> {
-                            parentController.toPlaylistTracks(playlist);
+                            AppGlobal.getLayoutController().toPlaylistTracks(playlist);
                         });
 
                         playlistOptions.getItems().addAll(playItem, manageTracksItem);
@@ -85,15 +100,6 @@ public class PlaylistDirectoryController implements Initializable
                 }
             });
         }
-    }
-
-    /**
-     * Sets the parent controller.
-     * @param parentController The parent controller of the view.
-     */
-    public void setParentController(LayoutController parentController)
-    {
-        this.parentController = parentController;
     }
 
     /**

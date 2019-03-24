@@ -3,7 +3,7 @@
 }
 
 .header {
-    -fx-background-color: #1E1E1E;
+    -fx-background-color: #333333;
 }
 
 .footer {
@@ -39,7 +39,7 @@
 }
 
 .side-bar {
-    -fx-background-color: #181818;
+    -fx-background-color: #282828;
 }
 
 .playbackControls {
