@@ -45,7 +45,7 @@ public class Startup extends Application
         Scene scene = new Scene(root, 1280, 720);
         scene.getStylesheets().add("/Views/Layout/main.css");
 
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);
@@ -79,9 +79,15 @@ public class Startup extends Application
                 Stage dialog = new Stage();
 
                 Parent setupRoot = FXMLLoader.load(getClass().getResource("/Views/Setup/Setup.fxml"));
-                dialog.setScene(new Scene(setupRoot));
+
+                Scene setupScene = new Scene(setupRoot);
+                setupScene.getStylesheets().add("/Views/Layout/main.css");
+
+                dialog.setScene(setupScene);
 
                 // Show the setup stage as a modal of the primary stage.
+                dialog.setMinWidth(600);
+                dialog.setMinHeight(600);
                 dialog.initOwner(primaryStage);
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.showAndWait();

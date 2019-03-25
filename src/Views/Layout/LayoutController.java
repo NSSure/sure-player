@@ -1,29 +1,23 @@
 package Views.Layout;
 
-import EventSystem.EventBus;
+import Helpers.Constants;
+import Utilities.NavigationService;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 import Enums.QueueType;
 import javafx.beans.Observable;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import jiconfont.icons.FontAwesome;
 
 import Icons.ExtendedIconNode;
-import Icons.PlaybackIcons;
+import Icons.ApplicationIcons;
 import Models.Playlist;
-import Views.Playlist.Directory.PlaylistDirectoryController;
-import Views.Playlist.PlaylistController;
 import Views.Playlist.Tracks.PlaylistTracksController;
 import Views.Queue.QueueController;
 import javafx.event.ActionEvent;
-import Views.Tracks.TracksController;
 import Utilities.AppGlobal;
 import Models.Track;
 import Utilities.TrackManager;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -81,19 +75,18 @@ public class LayoutController
 
     private TrackManager trackManager;
 
-    private PlaybackIcons playbackIcons;
+    private ApplicationIcons applicationIcons;
 
     private Parent tracksNode;
     private Parent queueNode;
-
-    private TracksController tracksController;
-    private QueueController queueController;
 
     private String currentCenterNode;
     private String previousCenterNode;
 
     private double xOffset;
     private double yOffset;
+
+    private QueueType previousQueueType;
 
     public LayoutController()
     {
@@ -104,7 +97,7 @@ public class LayoutController
         // Register the font awesome icons.
         IconFontFX.register(FontAwesome.getIconFont());
 
-        playbackIcons = new PlaybackIcons();
+        applicationIcons = new ApplicationIcons();
     }
 
     /**
@@ -113,23 +106,10 @@ public class LayoutController
      */
     public void initialize() throws IOException
     {
-        // Load the default state of the track listing.
-        FXMLLoader tracksLoader = new FXMLLoader(getClass().getResource("/Views/Tracks/Tracks.fxml"));
-        tracksNode = tracksLoader.load();
-        tracksController = tracksLoader.getController();
-        tracksController.setParentController(this);
-
-        // Load the default state of the queue view.
-        FXMLLoader queueLoader = new FXMLLoader(getClass().getResource("/Views/Queue/Queue.fxml"));
-        queueNode = queueLoader.load();
-        queueController = queueLoader.getController();
-        queueController.startQueue(QueueType.TRACKS, trackManager.getCurrentTrack());
-
         // Set the UI bindings and text.
         configure();
 
-        // Set the default center pane as the track listing.
-        toTrackList(null);
+        this.toTrackList(null);
     }
 
     /**
@@ -140,12 +120,12 @@ public class LayoutController
         this.currentTrack = trackManager.getCurrentTrack();
 
         // Set Playback control icons.
-        lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
-        lblStepBackward.setGraphic(playbackIcons.getStepBackwardIcon());
-        lblStepForward.setGraphic(playbackIcons.getStepForwardIcon());
-        lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
-        lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
-        lblShuffle.setGraphic(playbackIcons.getShuffleIcon());
+        lblTogglePlayback.setGraphic(applicationIcons.getPlayCircleIcon());
+        lblStepBackward.setGraphic(applicationIcons.getStepBackwardIcon());
+        lblStepForward.setGraphic(applicationIcons.getStepForwardIcon());
+        lblSoundLevel.setGraphic(applicationIcons.getDefaultVolumeIcon());
+        lblTrackView.setGraphic(applicationIcons.getQueuedViewIcon());
+        lblShuffle.setGraphic(applicationIcons.getShuffleIcon());
 
         lblCurrentTrack.setText(this.currentTrack.getName());
         lblCurrentArtist.setText(this.currentTrack.getArtist());
@@ -204,7 +184,7 @@ public class LayoutController
      */
     private void onMediaPlaybackStarted()
     {
-        lblTogglePlayback.setGraphic(playbackIcons.getPauseCircleIcon());
+        lblTogglePlayback.setGraphic(applicationIcons.getPauseCircleIcon());
     }
 
     /**
@@ -212,7 +192,7 @@ public class LayoutController
      */
     private void onMediaPlaybackPaused()
     {
-        lblTogglePlayback.setGraphic(playbackIcons.getPlayCircleIcon());
+        lblTogglePlayback.setGraphic(applicationIcons.getPlayCircleIcon());
     }
 
     /**
@@ -239,63 +219,29 @@ public class LayoutController
      */
     public void onPlaylistCreationAborted()
     {
-        toPreviousCenterNode();
+        NavigationService.loadPreviousFxml();
     }
 
     /**
      * A playlist was created so we need to tell the sidebar playlist directory to add the new playlist to the UI.
-     * @param playlist
      */
     public void onPlaylistCreationFinished()
     {
-        toPreviousCenterNode();
+        NavigationService.loadPreviousFxml();
     }
 
     /**
      * Changes the node displayed in the BorderPanes center.
      *
-     * @param resourcePath The path to the fxml file to load in the center pane.
      * @param targetCenterNode The type of node being loaded in the center pane.
      * @return The FXMLLoader that handles loading the fxml resources.
      */
-    private  FXMLLoader loadCenterPane(String resourcePath, String targetCenterNode)
+    public void setCenterPane(Parent centerNode, String targetCenterNode)
     {
-        try
-        {
-            // Get the fxml resource from the path and load it into the center node.
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(resourcePath));
-            Parent centerNode = loader.load();
-            sceneBase.setCenter((Parent)centerNode);
-
-            previousCenterNode = currentCenterNode;
-            currentCenterNode = targetCenterNode;
-
-            return loader;
-        }
-        catch (IOException ex)
-        {
-            System.out.println(ex.getMessage());
-        }
-
-        return null;
+        sceneBase.setCenter(centerNode);
+        previousCenterNode = currentCenterNode;
+        currentCenterNode = targetCenterNode;
     }
-
-    /**
-     * Changes the node displayed in the BorderPanes center.
-     *
-     * @param centerNode The actual node object to load into the center node
-     * @param targetCenterNode The type of node being loaded in the center pane.
-     */
-    private void loadCenterPane(Parent centerNode, String targetCenterNode)
-    {
-        if(currentCenterNode == null ||  currentCenterNode.compareToIgnoreCase(targetCenterNode) != 0)
-        {
-            sceneBase.setCenter(centerNode);
-            previousCenterNode = currentCenterNode;
-            currentCenterNode = targetCenterNode;
-        }
-    }
-
     // FXML Functions
 
     /**
@@ -312,7 +258,7 @@ public class LayoutController
                 toTrackList(null);
                 break;
             case "queue":
-                toQueue(queueController.getQueueType(), trackManager.getCurrentTrack());
+                toQueue(this.previousQueueType, trackManager.getCurrentTrack());
                 break;
             default:
                 break;
@@ -325,15 +271,9 @@ public class LayoutController
      */
     public void toPlaylistTracks(Playlist playlist)
     {
-        FXMLLoader loader = loadCenterPane("/Views/Playlist/Tracks/playlist-tracks.fxml", "playlist-tracks");
-
-        if(loader != null)
-        {
-            // Set any necessary variables on the child controller.
-            PlaylistTracksController playlistTracksController = loader.getController();
-            playlistTracksController.setParentController(this);
-            playlistTracksController.setPlaylist(playlist);
-        }
+        PlaylistTracksController playlistTracksController = NavigationService.loadFxml(Constants.playlistTracksFxmlPath);
+        playlistTracksController.setParentController(this);
+        playlistTracksController.setPlaylist(playlist);
     }
 
     /**
@@ -344,9 +284,10 @@ public class LayoutController
      */
     public void toQueue(QueueType queueType, Playlist playlist)
     {
+        this.previousQueueType = queueType;
+        QueueController queueController = NavigationService.loadFxml(Constants.queueFxmlPath);
         queueController.startQueue(queueType, playlist);
-        loadCenterPane(queueNode, "queue");
-        lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+        lblTrackView.setGraphic(applicationIcons.getTrackViewIcon());
     }
 
     /**
@@ -357,9 +298,9 @@ public class LayoutController
      */
     public void toQueue(QueueType queueType, Track track)
     {
+        QueueController queueController = NavigationService.loadFxml(Constants.queueFxmlPath);
         queueController.startQueue(queueType, track);
-        loadCenterPane(queueNode, "queue");
-        lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+        lblTrackView.setGraphic(applicationIcons.getTrackViewIcon());
     }
 
     /**
@@ -369,14 +310,7 @@ public class LayoutController
     @FXML
     public void toPlaylist(ActionEvent event)
     {
-        FXMLLoader loader = loadCenterPane("/Views/Playlist/Playlist.fxml", "playlist");
-
-        if(loader != null)
-        {
-            // Injec the parent controller into the child.
-            PlaylistController playlistController = loader.getController();
-            playlistController.setParentController(this);
-        }
+        NavigationService.loadFxml(Constants.playlistCreationFxmlPath);
     }
 
     /**
@@ -386,7 +320,7 @@ public class LayoutController
     @FXML
     public void toTrackList(MouseEvent event)
     {
-        loadCenterPane(tracksNode, "tracks");
+        NavigationService.loadFxml(Constants.tracksFxmlPath);
     }
 
     /**
@@ -429,28 +363,28 @@ public class LayoutController
         // If we are on the tracks view we need to load the queue view.
         if(currentCenterNode.compareToIgnoreCase("tracks") == 0)
         {
-            lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
+            lblTrackView.setGraphic(applicationIcons.getTrackViewIcon());
             toQueue(QueueType.TRACKS, trackManager.getSelectedTrack());
         }
         // If we are on the queue view we need to load the track view.
         else if (currentCenterNode.compareToIgnoreCase("queue") == 0)
         {
             trackManager.setQueuedTracks(trackManager.getTracks());
-            lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
+            lblTrackView.setGraphic(applicationIcons.getQueuedViewIcon());
             toTrackList(null);
         }
         // If we are on any other page then we need to swap depending on the current icon.
         else
         {
-            if(lblTrackView.getGraphic() == playbackIcons.getTrackViewIcon())
+            if(lblTrackView.getGraphic() == applicationIcons.getTrackViewIcon())
             {
-                lblTrackView.setGraphic(playbackIcons.getTrackViewIcon());
-                toQueue(queueController.getQueueType(), trackManager.getSelectedTrack());
+                lblTrackView.setGraphic(applicationIcons.getTrackViewIcon());
+                toQueue(this.previousQueueType, trackManager.getSelectedTrack());
             }
             else
             {
                 trackManager.setQueuedTracks(trackManager.getTracks());
-                lblTrackView.setGraphic(playbackIcons.getQueuedViewIcon());
+                lblTrackView.setGraphic(applicationIcons.getQueuedViewIcon());
                 toTrackList(null);
             }
         }
@@ -474,13 +408,13 @@ public class LayoutController
     @FXML
     public void onSoundLevelIconClicked(MouseEvent event)
     {
-        if(lblSoundLevel.getGraphic() == playbackIcons.getDefaultVolumeIcon())
+        if(lblSoundLevel.getGraphic() == applicationIcons.getDefaultVolumeIcon())
         {
-            lblSoundLevel.setGraphic(playbackIcons.getMutedVolumeIcon());
+            lblSoundLevel.setGraphic(applicationIcons.getMutedVolumeIcon());
         }
         else
         {
-            lblSoundLevel.setGraphic(playbackIcons.getDefaultVolumeIcon());
+            lblSoundLevel.setGraphic(applicationIcons.getDefaultVolumeIcon());
         }
     }
 

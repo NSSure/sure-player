@@ -1,10 +1,13 @@
 package Views.Layout.Sidebar;
 
+import Helpers.Constants;
+import Utilities.NavigationService;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
@@ -24,5 +27,10 @@ public class SidebarController
 
         yourLibraryListView.setItems(items);
         yourLibraryListView.setOnMouseClicked(event -> yourLibraryListView.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML
+    private void onAddPlaylistClicked(MouseEvent event) {
+        NavigationService.loadFxml(Constants.playlistCreationFxmlPath);
     }
 }

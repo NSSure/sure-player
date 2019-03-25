@@ -1,8 +1,12 @@
 package Views.Playlist.Tracks;
 
+import Helpers.Constants;
+import Utilities.NavigationService;
 import javafx.fxml.FXML;
 
 import Enums.QueueType;
+
+import java.io.IOException;
 import java.util.List;
 
 import Views.Layout.LayoutController;
@@ -106,9 +110,9 @@ public class PlaylistTracksController
      * Calls toQueue on the parent controller.
      */
     @FXML
-    public void onPlayClicked()
+    public void onPlayClicked() throws IOException
     {
-        this.parentController.toQueue(QueueType.PLAYLIST, playlist);
+        AppGlobal.getLayoutController().toQueue(QueueType.PLAYLIST, playlist);
     }
 
     /**

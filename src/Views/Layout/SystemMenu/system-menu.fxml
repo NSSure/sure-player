@@ -5,35 +5,35 @@
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="Views.Layout.SystemMenu.SystemMenuController">
     <MenuBar styleClass="header" HBox.hgrow="ALWAYS" fx:id="menuBar">
         <menus>
-            <Menu text="File">
+            <Menu styleClass="menu" text="File">
                 <items>
-                    <MenuItem text="New"/>
-                    <MenuItem text="Open"/>
-                    <MenuItem text="Save"/>
-                    <MenuItem text="Save As"/>
+                    <MenuItem styleClass="menu-item" text="New"/>
+                    <MenuItem styleClass="menu-item" text="Open"/>
+                    <MenuItem styleClass="menu-item" text="Save"/>
+                    <MenuItem styleClass="menu-item" text="Save As"/>
                     <SeparatorMenuItem  />
-                    <MenuItem text="Exit"/>
+                    <MenuItem styleClass="menu-item" text="Exit"/>
                 </items>
             </Menu>
-            <Menu text="Playlist">
+            <Menu styleClass="menu" text="Playlist">
                 <items>
-                    <MenuItem text="Create new playlist" onAction="#toPlaylist"></MenuItem>
+                    <MenuItem styleClass="menu-item" text="Create new playlist" onAction="#toPlaylist"></MenuItem>
                 </items>
             </Menu>
-            <Menu text="Edit">
+            <Menu styleClass="menu" text="Edit">
                 <items>
-                    <MenuItem text="Copy"/>
-                    <MenuItem text="Cut"/>
-                    <MenuItem text="Paste"/>
+                    <MenuItem styleClass="menu-item" text="Copy"/>
+                    <MenuItem styleClass="menu-item" text="Cut"/>
+                    <MenuItem styleClass="menu-item" text="Paste"/>
                 </items>
             </Menu>
         </menus>
     </MenuBar>
     <MenuBar styleClass="header">
         <menus>
-            <Menu fx:id="minimizeMenu"></Menu>
-            <Menu fx:id="maximizeMenu"></Menu>
-            <Menu fx:id="exitMenu"></Menu>
+            <Menu styleClass="menu" fx:id="minimizeMenu"></Menu>
+            <Menu styleClass="menu" fx:id="maximizeMenu"></Menu>
+            <Menu styleClass="menu" fx:id="exitMenu"></Menu>
         </menus>
     </MenuBar>
 </HBox>

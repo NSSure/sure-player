@@ -4,6 +4,32 @@
 
 .header {
     -fx-background-color: #333333;
+    -fx-padding: 0 1 0 1;
+    -fx-spacing: 1;
+}
+
+.menu-item {
+    -fx-padding: 1 5 1 5;
+}
+
+.menu {
+    -fx-padding: 8 8 8 8;
+}
+
+.menu .context-menu {
+    -fx-padding: 0 0 0 0;
+}
+
+.menu-item {
+    -fx-padding: 8 8 8 8;
+}
+
+.menu-item > .label {
+    -fx-font-size: 13;
+}
+
+.menu > .label {
+    -fx-font-size: 13;
 }
 
 .footer {

@@ -20,8 +20,26 @@
     <bottom>
         <VBox spacing="20" styleClass="playbackControls">
             <padding>
-                <Insets top="20" right="10" bottom="20" left="10"/>
+                <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
+
+            <HBox spacing="15" HBox.hgrow="ALWAYS" alignment="CENTER">
+                <Label fx:id="lblStepBackward" onMouseClicked="#onPreviousClicked">
+                    <tooltip>
+                        <Tooltip text="Previous" />
+                    </tooltip>
+                </Label>
+                <Label fx:id="lblTogglePlayback" onMouseClicked="#onStartClicked">
+                    <tooltip>
+                        <Tooltip text="Play/Pause" />
+                    </tooltip>
+                </Label>
+                <Label fx:id="lblStepForward" onMouseClicked="#onNextClicked">
+                    <tooltip>
+                        <Tooltip text="Next" />
+                    </tooltip>
+                </Label>
+            </HBox>
 
             <HBox spacing="20">
                 <Label text="0:00" fx:id="lblCurrentTimeElapsed" />
@@ -30,62 +48,42 @@
             </HBox>
 
             <HBox>
-                <VBox HBox.hgrow="NEVER" alignment="CENTER_LEFT">
+                <VBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
                     <Label fx:id="lblCurrentTrack" style="-fx-font-weight: bold;" />
                     <Label fx:id="lblCurrentArtist" />
                 </VBox>
 
-                <HBox HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label fx:id="lblStepBackward" onMouseClicked="#onPreviousClicked">
-                        <tooltip>
-                            <Tooltip text="Previous" />
-                        </tooltip>
-                    </Label>
-                    <Label fx:id="lblTogglePlayback" onMouseClicked="#onStartClicked">
-                        <tooltip>
-                            <Tooltip text="Play/Pause" />
-                        </tooltip>
-                    </Label>
-                    <Label fx:id="lblStepForward" onMouseClicked="#onNextClicked">
-                        <tooltip>
-                            <Tooltip text="Next" />
-                        </tooltip>
-                    </Label>
-                </HBox>
+                <ToolBar styleClass="footer">
+                    <padding>
+                        <Insets top="10" right="20" bottom="10" left="20"/>
+                    </padding>
 
-                <VBox HBox.hgrow="NEVER" alignment="CENTER_RIGHT">
-                    <ToolBar styleClass="footer">
-                        <padding>
-                            <Insets top="10" right="20" bottom="10" left="20"/>
-                        </padding>
+                    <items>
+                        <Label fx:id="lblSoundLevel" onMouseClicked="#onSoundLevelIconClicked" minWidth="30">
+                            <padding>
+                                <Insets right="10" />
+                            </padding>
+                        </Label>
 
-                        <items>
-                            <Label fx:id="lblSoundLevel" onMouseClicked="#onSoundLevelIconClicked" minWidth="30">
-                                <padding>
-                                    <Insets right="10" />
-                                </padding>
-                            </Label>
+                        <Slider minWidth="100" />
 
-                            <Slider minWidth="100" />
+                        <Label fx:id="lblTrackView" onMouseClicked="#onTrackViewClicked">
+                            <padding>
+                                <Insets right="10" left="10" />
+                            </padding>
 
-                            <Label fx:id="lblTrackView" onMouseClicked="#onTrackViewClicked">
-                                <padding>
-                                    <Insets right="10" left="10" />
-                                </padding>
+                            <tooltip>
+                                <Tooltip text="Queue/Track" />
+                            </tooltip>
+                        </Label>
 
-                                <tooltip>
-                                    <Tooltip text="Queue/Track" />
-                                </tooltip>
-                            </Label>
-
-                            <Label fx:id="lblShuffle" onMouseClicked="#onShuffleClicked">
-                                <tooltip>
-                                    <Tooltip text="Shuffle" />
-                                </tooltip>
-                            </Label>
-                        </items>
-                    </ToolBar>
-                </VBox>
+                        <Label fx:id="lblShuffle" onMouseClicked="#onShuffleClicked">
+                            <tooltip>
+                                <Tooltip text="Shuffle" />
+                            </tooltip>
+                        </Label>
+                    </items>
+                </ToolBar>
             </HBox>
         </VBox>
     </bottom>

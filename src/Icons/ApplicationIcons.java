@@ -11,7 +11,7 @@ import jiconfont.javafx.IconNode;
  * @author Nick Gordon
  * @since 4/12/2018
  */
-public class PlaybackIcons
+public class ApplicationIcons
 {
     private ExtendedIconNode defaultVolumeIcon;
 
@@ -31,10 +31,16 @@ public class PlaybackIcons
 
     private ExtendedIconNode trackViewIcon;
 
+    private ExtendedIconNode closeIcon;
+
+    private ExtendedIconNode maximizeIcon;
+
+    private ExtendedIconNode minimizeIcon;
+
     private static Color defaultColor = Color.valueOf("#A7A7A7");
     private static Color activeColor = Color.valueOf("#1FA67A");
 
-    public PlaybackIcons()
+    public ApplicationIcons()
     {
         // Set the default values for all of the page icons.
 
@@ -74,6 +80,18 @@ public class PlaybackIcons
         trackViewIcon = new ExtendedIconNode(FontAwesome.LIST);
         trackViewIcon.setIconSize(20);
         trackViewIcon.setFill(Color.valueOf("#A7A7A7"));
+
+        closeIcon = new ExtendedIconNode(FontAwesome.WINDOW_CLOSE);
+        closeIcon.setIconSize(16);
+        closeIcon.setFill(Color.valueOf("#DD4F42"));
+
+        minimizeIcon = new ExtendedIconNode(FontAwesome.WINDOW_MINIMIZE);
+        minimizeIcon.setIconSize(16);
+        minimizeIcon.setFill(Color.valueOf("#A7A7A7"));
+
+        maximizeIcon = new ExtendedIconNode(FontAwesome.WINDOW_RESTORE);
+        maximizeIcon.setIconSize(16);
+        maximizeIcon.setFill(Color.valueOf("#A7A7A7"));
     }
 
     public IconNode getDefaultVolumeIcon() {
@@ -148,5 +166,29 @@ public class PlaybackIcons
 
     public void setQueuedViewIcon(ExtendedIconNode queuedViewIcon) {
         this.queuedViewIcon = queuedViewIcon;
+    }
+
+    public ExtendedIconNode getCloseIcon() {
+        return closeIcon;
+    }
+
+    public void setCloseIcon(ExtendedIconNode closeIcon) {
+        this.closeIcon = closeIcon;
+    }
+
+    public ExtendedIconNode getMinimizeIcon() {
+        return minimizeIcon;
+    }
+
+    public void setMinimizeIcon(ExtendedIconNode minimizeIcon) {
+        this.minimizeIcon = minimizeIcon;
+    }
+
+    public ExtendedIconNode getMaximizeIcon() {
+        return maximizeIcon;
+    }
+
+    public void setMaximizeIcon(ExtendedIconNode maximizeIcon) {
+        this.maximizeIcon = maximizeIcon;
     }
 }

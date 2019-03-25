@@ -1,5 +1,6 @@
 package Views.Layout.SystemMenu;
 
+import Icons.ApplicationIcons;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
@@ -32,6 +33,8 @@ public class SystemMenuController
     private double xOffset;
     private double yOffset;
 
+    private ApplicationIcons applicationIcons = new ApplicationIcons();
+
     /**
      * Lifecycle event for the fxml page.  Here all the controls have been initialized and can be accessed from code.
      * @throws IOException
@@ -41,15 +44,18 @@ public class SystemMenuController
         menuBar.setOnMousePressed(event -> SetApplicationPosition(event));
         menuBar.setOnMouseDragged(event -> DrawApplicationWindow(event));
 
-        Label minimizeMenuLabel = new Label("Minimize");
+        Label minimizeMenuLabel = new Label();
+        minimizeMenuLabel.setGraphic(applicationIcons.getMinimizeIcon());
         minimizeMenuLabel.setOnMouseClicked(event -> AppGlobal.getCurrentStage().setIconified(true));
         minimizeMenu.setGraphic(minimizeMenuLabel);
 
-        Label maximizeMenuLabel = new Label("Maximize");
+        Label maximizeMenuLabel = new Label();
+        maximizeMenuLabel.setGraphic(applicationIcons.getMaximizeIcon());
         maximizeMenuLabel.setOnMouseClicked(event -> AppGlobal.getCurrentStage().setMaximized(!AppGlobal.getCurrentStage().isMaximized()));
         maximizeMenu.setGraphic(maximizeMenuLabel);
 
-        Label exitMenuLabel = new Label("Exit");
+        Label exitMenuLabel = new Label();
+        exitMenuLabel.setGraphic(applicationIcons.getCloseIcon());
         exitMenuLabel.setOnMouseClicked(event -> AppGlobal.shutdownApplication());
         exitMenu.setGraphic(exitMenuLabel);
     }

@@ -4,10 +4,13 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.control.Label?>
 <VBox fx:controller="Views.Setup.SetupController" fx:id="sceneBase" xmlns:fx="http://javafx.com/fxml">
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
+
+    <Label text="Sure Player" alignment="CENTER"></Label>
 
     <HBox>
         <Button fx:id="btnLocalDirectory" text="Set Local Music Folder" HBox.hgrow="ALWAYS" maxWidth="Infinity" />

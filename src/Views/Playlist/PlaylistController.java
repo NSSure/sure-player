@@ -4,6 +4,7 @@ import EventSystem.EventBus;
 import Models.Playlist;
 
 import Utilities.AppGlobal;
+import Utilities.NavigationService;
 import Utilities.PlaylistUtility;
 import Views.Layout.LayoutController;
 import javafx.fxml.FXML;
@@ -98,7 +99,8 @@ public class PlaylistController
     @FXML
     private void onCancelClicked(MouseEvent event)
     {
-        AppGlobal.getLayoutController().onPlaylistCreationAborted();
+        // AppGlobal.getLayoutController().onPlaylistCreationAborted();
+        NavigationService.loadPreviousFxml();
     }
 
     public void setParentController(LayoutController parentController)
