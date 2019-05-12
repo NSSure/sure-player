@@ -1,0 +1,8 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+
+<StackPane fx:controller="Views.Video.VideoPlaybackController" xmlns:fx="http://javafx.com/fxml" fx:id="videoPlaybackPane" minHeight="100" minWidth="100">
+    <HBox alignment="CENTER">
+        <MediaView fx:id="videoPlaybackView" fitHeight="${videoPlaybackPane.height}" fitWidth="${videoPlaybackPane.width}"></MediaView>
+    </HBox>
+</StackPane>
