@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Controller for the queue.fxml page.
+ * Controller for the video-playback.fxml page.
  *
  * @author Nick Gordon
  * @since 3/27/2018
@@ -45,7 +45,7 @@ public class Startup extends Application
         Scene scene = new Scene(root, 1280, 720);
         scene.getStylesheets().add("/Views/Layout/main.css");
 
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        // primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         primaryStage.setTitle("Track Player");
         primaryStage.setScene(scene);

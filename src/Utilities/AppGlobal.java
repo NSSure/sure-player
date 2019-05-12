@@ -95,4 +95,14 @@ public class AppGlobal
         Platform.exit();
         System.exit(0);
     }
+
+    public static boolean isMp3(String name) {
+        int fileExtensionAccessorIndex = name.lastIndexOf('.');
+        return name.substring(fileExtensionAccessorIndex + 1).compareToIgnoreCase("mp3") == 0;
+    }
+
+    public static boolean isMp4(String name) {
+        int fileExtensionAccessorIndex = name.lastIndexOf('.');
+        return name.substring(fileExtensionAccessorIndex + 1).compareToIgnoreCase("mp4") == 0;
+    }
 }

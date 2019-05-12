@@ -1,5 +1,6 @@
 package Utilities;
 
+import Helpers.Constants;
 import Models.Track;
 import com.google.gson.Gson;
 import javafx.beans.property.IntegerProperty;
@@ -25,6 +26,12 @@ import java.util.LinkedList;
  */
 public class TrackManager
 {
+    public Track SampleTrack;
+
+    public Track getSampleTrack() {
+        return this.SampleTrack;
+    }
+
     // A full list of all the tracks in the LocalTrackSource.json file.
     private LinkedList<Track> tracks;
 
@@ -62,6 +69,8 @@ public class TrackManager
 
             setSelectedTrack(tracks.get(0));
             setCurrentTrack(tracks.get(0));
+
+            this.SampleTrack = tracks.get(0);
         }
         catch (Exception ex)
         {
@@ -154,6 +163,7 @@ public class TrackManager
 
         configureMedia(getQueuedTracks().get(index));
         toggleTrack(null);
+        enforceProperCenterLayoutPane();
     }
 
     /**
@@ -173,6 +183,7 @@ public class TrackManager
 
         configureMedia(getQueuedTracks().get(index));
         toggleTrack(null);
+        enforceProperCenterLayoutPane();
     }
 
     /**
@@ -200,6 +211,21 @@ public class TrackManager
 
     public boolean isShuffle() {
         return isShuffle;
+    }
+
+    // Private internal track manager functions.
+
+    private void enforceProperCenterLayoutPane() {
+        if (AppGlobal.isMp3(getCurrentTrack().getName()) && NavigationService.getCurrentFxmlPath().compareToIgnoreCase(Constants.videoPlaybackFxmlPath) == 0)
+        {
+            NavigationService.loadFxml(Constants.tracksFxmlPath);
+        }
+        else if (AppGlobal.isMp4(getCurrentTrack().getName()) && NavigationService.getCurrentFxmlPath().compareToIgnoreCase(Constants.videoPlaybackFxmlPath) != 0) {
+            NavigationService.loadFxml(Constants.videoPlaybackFxmlPath);
+        }
+        else {
+            // Do nothing we don't need to update the layout controller's center pane.
+        }
     }
 
     // Bindable properties (Basically getters and setter).

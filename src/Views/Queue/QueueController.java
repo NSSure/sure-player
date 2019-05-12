@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 /**
- * Controller for the queue.fxml page.
+ * Controller for the video-playback.fxml page.
  *
  * @author Nick Gordon
  * @since 4/19/2018

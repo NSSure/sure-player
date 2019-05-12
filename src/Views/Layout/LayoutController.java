@@ -110,6 +110,7 @@ public class LayoutController
         configure();
 
         this.toTrackList(null);
+        // NavigationService.loadFxml(Constants.videoPlaybackFxmlPath);
     }
 
     /**

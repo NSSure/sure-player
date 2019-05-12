@@ -47,5 +47,10 @@
             <artifactId>fx-gson</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5-1</version>
+        </dependency>
     </dependencies>
 </project>

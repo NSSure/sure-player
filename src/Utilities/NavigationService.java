@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class NavigationService {
     private static ArrayList<String> fxmlPaths = new ArrayList<>();
+    private static String currentFxmlPath = null;
 
     public static <TController> TController loadFxml(String fxmlPath) {
         try {
@@ -16,6 +17,7 @@ public class NavigationService {
             Parent centerNode = loader.load();
 
             fxmlPaths.add(fxmlPath);
+            currentFxmlPath = fxmlPath;
 
             AppGlobal.getLayoutController().setCenterPane(centerNode, fxmlPath);
 
@@ -37,7 +39,16 @@ public class NavigationService {
 
         String previousFxmlPath = fxmlPaths.get(fxmlPaths.size() - 2);
         fxmlPaths.remove(fxmlPaths.size() - 1);
+        currentFxmlPath = previousFxmlPath;
 
         loadFxml(previousFxmlPath);
+    }
+
+    public static String getCurrentFxmlPath() {
+        return currentFxmlPath;
+    }
+
+    public static void setCurrentFxmlPath(String fxmlPath) {
+        currentFxmlPath = fxmlPath;
     }
 }
